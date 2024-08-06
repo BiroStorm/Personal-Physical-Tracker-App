@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PPT Project</string>
+    <string name="start_btn">Start</string>
+    <string name="end_btn">Stop</string>
+</resources>
