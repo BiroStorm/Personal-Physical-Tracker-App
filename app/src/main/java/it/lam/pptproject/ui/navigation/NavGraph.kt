@@ -11,17 +11,19 @@ import it.lam.pptproject.ui.screen.HomeScreen
 import it.lam.pptproject.ui.screen.NotificationsScreen
 import it.lam.pptproject.ui.screen.ProfileScreen
 import it.lam.pptproject.ui.screen.SearchScreen
+import it.lam.pptproject.ui.screens.LandingScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, contentPadding: PaddingValues) {
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = "landing",
         modifier = Modifier.padding(contentPadding)
     ) {
         composable("home") { HomeScreen() }
         composable("search") { SearchScreen() }
         composable("notifications") { NotificationsScreen() }
         composable("profile") { ProfileScreen() }
+        composable("landing") { LandingScreen(navController)}
     }
 }

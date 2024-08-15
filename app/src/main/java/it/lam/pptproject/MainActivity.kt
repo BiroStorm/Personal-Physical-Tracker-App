@@ -1,9 +1,13 @@
 package it.lam.pptproject
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -24,11 +28,41 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable
+import com.google.android.gms.fitness.LocalRecordingClient
+import it.lam.pptproject.api.FitnessAPI.subscribeToFitnessData
+import it.lam.pptproject.ui.screens.LandingScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val activityRecognitionPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (!isGranted) {
+            Log.w("MainActivity", "Activity Recognition permission denied")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Perform a Play Services version check
+        val hasMinPlayServices = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this, LocalRecordingClient.LOCAL_RECORDING_CLIENT_MIN_VERSION_CODE)
+
+        if(hasMinPlayServices != ConnectionResult.SUCCESS) {
+
+            Log.w("MainActivity", "Google Play Services troppo vecchia!")
+        }
+
+        activityRecognitionPermissionRequest.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
+
+
         enableEdgeToEdge()
         setContent {
             PPTProjectTheme {
@@ -38,7 +72,9 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
+
 
 
 @Composable
@@ -48,8 +84,9 @@ fun MainScreen() {
         BottomNavItem("Home", "home", ImageVector.vectorResource(R.drawable.home_24px)),
         BottomNavItem("Search", "search", ImageVector.vectorResource(R.drawable.home_24px)),
         BottomNavItem("Notifications", "notifications", ImageVector.vectorResource(R.drawable.home_24px)),
-        BottomNavItem("Profile", "profile", ImageVector.vectorResource(R.drawable.account_circle_24px))
-    )
+        BottomNavItem("Profile", "profile", ImageVector.vectorResource(R.drawable.account_circle_24px)),
+        )
+
 
     Scaffold(
         bottomBar = { BottomNavigationBar(navController, items) }

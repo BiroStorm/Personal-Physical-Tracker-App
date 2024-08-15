@@ -5,6 +5,7 @@ plugins {
     // added
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+
 }
 
 android {
@@ -79,6 +80,7 @@ dependencies {
     // HILT
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
@@ -89,6 +91,18 @@ dependencies {
 
     //DataStore
     implementation(libs.androidx.datastore.preferences)
+
+    // Fitness API
+    implementation(libs.play.services.fitness)
+
+    // ROOM
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+
+    //noinspection KaptUsageInsteadOfKsp
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
 }
 
 kapt {

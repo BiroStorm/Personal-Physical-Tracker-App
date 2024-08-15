@@ -13,8 +13,3 @@ fun SearchScreen() {
 fun NotificationsScreen() {
     Text("Notifications Screen")
 }
-
-@Composable
-fun ProfileScreen() {
-    Text("Profile Screen")
-}
