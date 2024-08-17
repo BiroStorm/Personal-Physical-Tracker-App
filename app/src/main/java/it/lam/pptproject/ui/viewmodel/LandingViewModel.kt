@@ -9,8 +9,10 @@ import it.lam.pptproject.data.UserPreferencesDataStore
 import it.lam.pptproject.data.room.AppDatabase
 import it.lam.pptproject.data.room.User
 import it.lam.pptproject.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
@@ -20,8 +22,32 @@ class LandingViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
+
+
     private val context = application.applicationContext
     val username = mutableStateOf("")
+    val users = mutableStateOf<List<User>>(emptyList())
+
+
+    init {
+        fetchUsers()
+    }
+
+    private fun fetchUsers() {
+        viewModelScope.launch {
+            users.value = withContext(Dispatchers.IO) {
+                userRepository.getAllUser()
+            }
+        }
+    }
+
+    fun setActiveUser(user: User, onActiveUserSet: () -> Unit) {
+        viewModelScope.launch {
+            userRepository.updateUser(user.copy(active = true))
+            UserPreferencesDataStore.saveUsername(context, user.username)
+            onActiveUserSet()
+        }
+    }
 
     fun saveUsername() {
         viewModelScope.launch {
@@ -33,6 +59,17 @@ class LandingViewModel @Inject constructor(
 
         }
     }
+
+    fun deleteUser(user: User) {
+    viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            userRepository.deleteUser(user)
+            // todo: Eliminare tutti i dati associati all'utente.
+            // riaggiorna la lista degli utenti
+            fetchUsers()
+        }
+    }
+}
 
     fun checkActiveUser(onActiveUserFound: () -> Unit) {
         viewModelScope.launch {
