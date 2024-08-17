@@ -12,16 +12,22 @@ private val Context.dataStore by preferencesDataStore("user_preferences")
 object UserPreferencesDataStore {
     private val USER_NAME_KEY = stringPreferencesKey("user_name")
 
-    fun getUserName(context: Context): Flow<String?> {
+    suspend fun getUsername(context: Context): Flow<String?> {
         return context.dataStore.data
             .map { preferences ->
                 preferences[USER_NAME_KEY]
             }
     }
 
-    suspend fun saveUserName(context: Context, userName: String) {
+    suspend fun saveUsername(context: Context, userName: String) {
         context.dataStore.edit { preferences ->
             preferences[USER_NAME_KEY] = userName
+        }
+    }
+
+    suspend fun clearUsername(context: Context) {
+        context.dataStore.edit { preferences ->
+            preferences.remove(USER_NAME_KEY)
         }
     }
 }

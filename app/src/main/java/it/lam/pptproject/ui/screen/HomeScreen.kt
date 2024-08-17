@@ -17,9 +17,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import it.lam.pptproject.R
 import it.lam.pptproject.ui.viewmodel.HomeViewModel
 
-
-// ! DA AGGIUNGERE UNA VIEW MODEL PER LA GESTIONE DELLA LOGICA DELLA PAGINA!!!!
-
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 

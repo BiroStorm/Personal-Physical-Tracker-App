@@ -1,5 +1,6 @@
-package it.lam.pptproject.ui.screens
+package it.lam.pptproject.ui.screen
 
+import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,14 +14,28 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import it.lam.pptproject.data.room.AppDatabase
+import it.lam.pptproject.di.LandingViewModelFactory
+import it.lam.pptproject.repository.UserRepository
 
 import it.lam.pptproject.ui.viewmodel.LandingViewModel
 
 @Composable
-fun LandingScreen(navController: NavController, viewModel: LandingViewModel = hiltViewModel()) {
+fun LandingScreen(navController: NavController) {
+    // ! Senza uso di Hilt per la DI della repo nel ViewModel.
+    val context = LocalContext.current
+    val application = context.applicationContext as Application
+    val userRepository = UserRepository(AppDatabase.getDatabase(context).userDao())
+
+    val viewModel: LandingViewModel = viewModel(
+        factory = LandingViewModelFactory(userRepository, application)
+    )
+
     val userName = remember { viewModel.username }
 
     viewModel.checkActiveUser {
@@ -42,7 +57,7 @@ fun LandingScreen(navController: NavController, viewModel: LandingViewModel = hi
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { viewModel.saveUserName()
+            onClick = { viewModel.saveUsername()
                 navController.navigate("home")
                       },
             modifier = Modifier.fillMaxWidth()

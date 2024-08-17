@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 
 class UserRepository (private val userDao: UserDao) {
 
-    val currentUser = MutableLiveData<User>()
+
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     fun getAllUser(): List<User> {
@@ -25,5 +25,9 @@ class UserRepository (private val userDao: UserDao) {
 
     suspend fun updateUser(user: User) {
         userDao.changeUser(user)
+    }
+
+    suspend fun getActiveUser(): User? {
+        return userDao.findActive()
     }
 }

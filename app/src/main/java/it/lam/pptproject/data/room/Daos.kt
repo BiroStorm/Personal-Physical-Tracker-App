@@ -2,7 +2,9 @@ package it.lam.pptproject.data.room
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Entity
 import androidx.room.Insert
+import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Update
 
@@ -22,4 +24,13 @@ interface UserDao {
 
     @Delete
     suspend fun delete(user: User)
+}
+
+@Dao
+interface ActivityDao {
+    @Insert
+    suspend fun insert(activity: Activity)
+
+    @Query("SELECT * FROM Activity WHERE username = :username")
+    suspend fun getActivities(username: String): List<Activity>
 }

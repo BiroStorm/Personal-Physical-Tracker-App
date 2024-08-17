@@ -28,14 +28,9 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable
 import com.google.android.gms.fitness.LocalRecordingClient
-import it.lam.pptproject.api.FitnessAPI.subscribeToFitnessData
-import it.lam.pptproject.ui.screens.LandingScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
