@@ -1,8 +1,8 @@
 package it.lam.pptproject.repository
 
 import androidx.lifecycle.MutableLiveData
-import it.lam.pptproject.data.room.User
-import it.lam.pptproject.data.room.UserDao
+import it.lam.pptproject.model.room.User
+import it.lam.pptproject.model.room.UserDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 

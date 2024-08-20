@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import it.lam.pptproject.data.UserPreferencesDataStore
-import it.lam.pptproject.data.room.AppDatabase
-import it.lam.pptproject.data.room.User
+import it.lam.pptproject.model.room.AppDatabase
+import it.lam.pptproject.model.room.User
 import it.lam.pptproject.repository.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -51,7 +51,7 @@ class LandingViewModel @Inject constructor(
 
     fun saveUsername() {
         viewModelScope.launch {
-            val user = User(username = username.value, active = true, id = 0)
+            val user = User(username = username.value, active = true)
             AppDatabase.getDatabase(context).userDao().insertUser(user)
 
             // Save username to DataStore

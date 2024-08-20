@@ -1,5 +1,6 @@
-package it.lam.pptproject.data.room
+package it.lam.pptproject.model.room
 
+import android.app.Activity
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Entity
@@ -27,10 +28,10 @@ interface UserDao {
 }
 
 @Dao
-interface ActivityDao {
+interface TrackingDataDao {
     @Insert
-    suspend fun insert(activity: Activity)
+    suspend fun insert(trackingData: TrackingData)
 
-    @Query("SELECT * FROM Activity WHERE username = :username")
-    suspend fun getActivities(username: String): List<Activity>
+    @Query("SELECT * FROM TrackingData WHERE username = :username")
+    suspend fun getActivities(username: String): List<TrackingData>
 }

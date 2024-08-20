@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import it.lam.pptproject.R
-import it.lam.pptproject.data.room.AppDatabase
+import it.lam.pptproject.model.room.AppDatabase
 import it.lam.pptproject.di.LandingViewModelFactory
 import it.lam.pptproject.repository.UserRepository
 

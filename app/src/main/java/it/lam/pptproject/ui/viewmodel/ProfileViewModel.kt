@@ -7,8 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import it.lam.pptproject.data.UserPreferencesDataStore
-import it.lam.pptproject.data.room.AppDatabase
-import it.lam.pptproject.data.room.User
+import it.lam.pptproject.model.room.AppDatabase
+import it.lam.pptproject.model.room.User
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject

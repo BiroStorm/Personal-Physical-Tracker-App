@@ -1,4 +1,4 @@
-package it.lam.pptproject.data.room
+package it.lam.pptproject.model.room
 
 import android.content.Context
 import androidx.room.Database
@@ -7,9 +7,10 @@ import androidx.room.RoomDatabase
 
 // https://developer.android.com/training/data-storage/room
 
-@Database(entities = [User::class], version = 1)
+@Database(entities = [User::class, TrackingData::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun trackingDataDao(): TrackingDataDao
 
     companion object {
         @Volatile

@@ -9,6 +9,11 @@ import com.google.android.gms.fitness.FitnessLocal
 import com.google.android.gms.fitness.data.LocalDataSet
 import com.google.android.gms.fitness.data.LocalDataType
 import com.google.android.gms.fitness.request.LocalDataReadRequest
+import it.lam.pptproject.utils.Tracker
+import it.lam.pptproject.utils.saveTrackingData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
@@ -41,7 +46,7 @@ object FitnessAPI{
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun readData(context: Context) {
+    fun saveData(context: Context) {
         val localRecordingClient = FitnessLocal.getLocalRecordingClient(context)
         val endTime = LocalDateTime.now().atZone(ZoneId.systemDefault())
         val startTime = endTime.minusWeeks(1)
@@ -61,7 +66,25 @@ object FitnessAPI{
             // The aggregate query puts datasets into buckets, so flatten into a
             // single list of datasets.
             for (dataSet in response.buckets.flatMap { it.dataSets }) {
-                dumpDataSet(dataSet)
+                //dumpDataSet(dataSet)
+                Log.d("FitnessAPI", "Data returned for Data type: ${dataSet.dataType.name}")
+                for (dp in dataSet.dataPoints) {
+                    Log.d("FitnessAPI","Data point:")
+                    Log.d("FitnessAPI","\tStart: ${dp.getStartTime(TimeUnit.MILLISECONDS)}")
+                    Log.d("FitnessAPI","\tEnd: ${dp.getEndTime(TimeUnit.MILLISECONDS)}")
+                    Log.d("FitnessAPI", "\tValue: ${dp.getValue(dp.dataType.fields[0])}")
+                    Tracker.setStartTime(dp.getStartTime(TimeUnit.MILLISECONDS))
+                    Tracker.setEndTime(dp.getEndTime(TimeUnit.MILLISECONDS))
+                    Tracker.setSteps(dp.getValue(dp.dataType.fields[0]).asInt())
+
+                    // call saveTrackingData in coroutine
+
+                }
+                // ! IN QUESTO CASO PRENDE SOLO L'ULTIMO DATASET (todo, metterlo nel for)
+                CoroutineScope(Dispatchers.IO).launch {
+                    saveTrackingData(context)
+                    Tracker.clearData()
+                }
             }
         }
             .addOnFailureListener { e ->
@@ -75,8 +98,8 @@ object FitnessAPI{
         for (dp in dataSet.dataPoints) {
             Log.i("FitnessAPI","Data point:")
             Log.i("FitnessAPI","\tType: ${dp.dataType.name}")
-            Log.i("FitnessAPI","\tStart: ${dp.getStartTime(TimeUnit.HOURS)}")
-            Log.i("FitnessAPI","\tEnd: ${dp.getEndTime(TimeUnit.HOURS)}")
+            Log.i("FitnessAPI","\tStart: ${dp.getStartTime(TimeUnit.MILLISECONDS)}")
+            Log.i("FitnessAPI","\tEnd: ${dp.getEndTime(TimeUnit.MILLISECONDS)}")
             for (field in dp.dataType.fields) {
                 Log.i("FitnessAPI","\tLocalField: ${field.name.toString()} LocalValue: ${dp.getValue(field)}")
             }
