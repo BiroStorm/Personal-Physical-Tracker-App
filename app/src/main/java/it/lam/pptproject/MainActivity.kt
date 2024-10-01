@@ -1,13 +1,11 @@
 package it.lam.pptproject
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -31,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.fitness.LocalRecordingClient
+import it.lam.pptproject.utils.PermissionManager
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,11 +38,10 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (!isGranted) {
-            Log.w("MainActivity", "Activity Recognition permission denied")
+            PermissionManager.forcePermissionRequest(this)
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -36,7 +36,6 @@ import it.lam.pptproject.ui.viewmodel.LandingViewModel
 
 @Composable
 fun LandingScreen(navController: NavController) {
-    // ! Senza uso di Hilt per la DI della repo nel ViewModel.
     val context = LocalContext.current
     val application = context.applicationContext as Application
     val userRepository = UserRepository(AppDatabase.getDatabase(context).userDao())

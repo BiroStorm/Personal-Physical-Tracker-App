@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PPT Project</string>
     <string name="start_btn">Inizia</string>
     <string name="end_btn">Termina</string>
+    <string name="force_permission_txt">Questa applicazione ha bisogna che acconsenti al tracciamento dell\'Attività. Concedi il permesso per continuare a usare l\'app.</string>
+    <string name="settings">Apri Impostazioni</string>
 </resources>

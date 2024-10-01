@@ -1,6 +1,7 @@
 package it.lam.pptproject.utils
 
 import android.util.Log
+import it.lam.pptproject.model.room.TrackingData
 
 // An Singleton (object) where to save the data of the current tracking
 // that will be saved later into the database as TrackerData
@@ -26,6 +27,15 @@ object Tracker {
         this.startTime = null
         this.endTime = null
         this.type = RecordType.WALKING
+        this.steps = 0
+
+    }
+
+    // Reset the Time of the tracker, setting the startTime as the last
+    // endTime, without changing the type of the record.
+    fun resetTime() {
+        this.startTime = endTime?.plus(1)
+        this.endTime = null
         this.steps = 0
 
     }
@@ -91,6 +101,18 @@ object Tracker {
          WALKING, DRIVING, SITTING
     }
 
+
+    // * Dovrebbe essere usato solo quando type != WALKING
+    fun convertToTrackingData(): TrackingData {
+        return TrackingData(
+            type = type,
+            startTime = startTime!!,
+            endTime = endTime!!,
+            values = "",
+            steps = steps,
+            username = username
+        )
+    }
 
 
 

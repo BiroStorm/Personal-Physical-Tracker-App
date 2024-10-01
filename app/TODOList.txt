@@ -1,0 +1,29 @@
+############# [ Lista delle cose da fare ] #############
+
+Sospensione del salvataggio automatico ogni X minuti.
+Se implementato, bisogna farlo con WorkManager (min 15 min), sennò con
+un Service in background.
+
+Per risolvere questo "problema", si salva solo quando:
+- si chiude l'app
+- si preme il tasto "Termina"
+
+
+
+############## Appunti e considerazioni ##############
+- Target minimo è un sdk 29, perchè usa il Recording API.
+
+- Il Fitness API non include calorie e km percorsi, ma
+solo i passi, nonostante venga dichiarato come ci siano 3 campi (step, km, calorie).
+
+- Bi-lingua.
+
+
+############## TODO PROSSIMA VOLTA ##############
+
+
+
+TODO:
+ - [ ] Implementare la funzionalità di salvataggio automatico.
+ - [ ] Gestire il salvataggio in caso di chiusura dell'app.
+ - [ ] Operazione 1 in background --> Notifica all'utente che deve esercitarsi.

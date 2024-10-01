@@ -1,29 +1,26 @@
 package it.lam.pptproject.ui.viewmodel
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
+import android.content.pm.PackageManager
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import it.lam.pptproject.api.FitnessAPI
 import it.lam.pptproject.data.ButtonStateDataStore
 import it.lam.pptproject.data.UserPreferencesDataStore
+import it.lam.pptproject.repository.TrackingRepository
 import it.lam.pptproject.utils.Tracker
-import it.lam.pptproject.utils.saveTrackingData
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+
+class HomeViewModel(
+    private val trackingRepository: TrackingRepository,
     application: Application
-)  : AndroidViewModel(application){
+) : AndroidViewModel(application) {
+
 
     @SuppressLint("StaticFieldLeak")
     private val context = application.applicationContext
@@ -41,38 +38,30 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun toggleState() {
+        if (!checkPermissions()) {
+            // * Non si hanno ancora i permessi, ignorare il click.
+            return
+        }
         _isTerminated.value = !_isTerminated.value
         viewModelScope.launch {
             ButtonStateDataStore.saveApplicationState(context, _isTerminated.value)
             if (_isTerminated.value) {
-
                 Tracker.start()
                 val username = UserPreferencesDataStore.getUsername(context).first() ?: "unknown"
                 Tracker.setUsername(username)
-                // ONLY IF THE TYPE IS WALKING ACTIVE FITNESS API
-                if (_currentType.value == Tracker.RecordType.WALKING) {
-                    FitnessAPI.subscribeToFitnessData(context)
-                }
+
+                trackingRepository.startTracking()
             } else {
                 Tracker.stop()
-                if (_currentType.value == Tracker.RecordType.WALKING) {
-                    FitnessAPI.saveData(context)
-                    FitnessAPI.unsubscribeFromFitnessData(context)
-                }else {
-                    saveTrackingData(context)
-                    Tracker.clearData()
-                }
+                trackingRepository.endTracking()
             }
         }
     }
 
     fun readFitnessData() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            FitnessAPI.saveData(context)
-        }else{
-            Log.e("HomeViewModel", "readFitnessData: Unsupported Android version")
+        viewModelScope.launch {
+            trackingRepository.printDati()
         }
     }
 
@@ -80,6 +69,15 @@ class HomeViewModel @Inject constructor(
         _currentType.value = type
         Tracker.setType(type)
     }
+
+
+
+    private fun checkPermissions(): Boolean {
+        return context.checkSelfPermission(
+            Manifest.permission.ACTIVITY_RECOGNITION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
 
 
 }

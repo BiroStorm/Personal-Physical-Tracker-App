@@ -1,5 +1,6 @@
 package it.lam.pptproject.ui.screen
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
@@ -24,19 +25,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import it.lam.pptproject.R
+import it.lam.pptproject.di.HomeViewModelFactory
+import it.lam.pptproject.repository.TrackingRepository
 import it.lam.pptproject.ui.viewmodel.HomeViewModel
 import it.lam.pptproject.utils.Tracker
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen() {
 
     val context = LocalContext.current
+
+    val application = context.applicationContext as Application
+
+    val trackingRepository = TrackingRepository(context)
+    val viewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelFactory(trackingRepository, application)
+    )
+
     val isTerminated by viewModel.isTerminated
     val selectedType by viewModel.currentType
+
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -47,8 +58,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 
             ExposedDropdownMenuBox(
                 expanded = expanded,
-                onExpandedChange = { expanded = it },
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                onExpandedChange = { if (!isTerminated) expanded = it },
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+
             ) {
                 TextField(
                     modifier = Modifier.menuAnchor(),
@@ -92,7 +104,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
                 shape = CircleShape,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
             ) {
-                Text(text = "dumpa i dati")
+                Text(text = "Salva i Dati")
             }
         }
     }

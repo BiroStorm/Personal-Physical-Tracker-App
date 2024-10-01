@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">PPT Project</string>
+    <string name="app_name" translatable="false">PPT Project</string>
     <string name="start_btn">Start</string>
     <string name="end_btn">Stop</string>
+    <string name="force_permission_txt">This app requires the Activity Recognition permission to track your steps. Please grant the permission to continue using the app.</string>
+    <string name="settings">Open Settings</string>
 </resources>
