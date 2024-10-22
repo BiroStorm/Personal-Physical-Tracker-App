@@ -8,9 +8,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import it.lam.pptproject.ui.screen.HomeScreen
-import it.lam.pptproject.ui.screen.NotificationsScreen
 import it.lam.pptproject.ui.screen.ProfileScreen
 import it.lam.pptproject.ui.screen.ChartsScreen
+import it.lam.pptproject.ui.screen.HomeScreen2
 import it.lam.pptproject.ui.screen.LandingScreen
 
 @Composable
@@ -22,7 +22,7 @@ fun NavGraph(navController: NavHostController, contentPadding: PaddingValues, mo
     ) {
         composable("Home") { HomeScreen() }
         composable("Charts") { ChartsScreen() }
-        composable("notifications") { NotificationsScreen() }
+        composable("Home2") { HomeScreen2() }
         composable("Profile") { ProfileScreen(navController) }
         composable("Landing") { LandingScreen(navController) }
     }

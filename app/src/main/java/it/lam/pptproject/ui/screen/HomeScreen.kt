@@ -43,6 +43,7 @@ object HomeDestination : NavigationDestination {
 @Composable
 fun HomeScreen() {
 
+    /*
     val context = LocalContext.current
 
     val application = context.applicationContext as Application
@@ -115,4 +116,6 @@ fun HomeScreen() {
             }
         }
     }
+
+     */
 }

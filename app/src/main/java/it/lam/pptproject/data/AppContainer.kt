@@ -5,12 +5,14 @@ package it.lam.pptproject.data
 import android.content.Context
 import it.lam.pptproject.model.room.AppDatabase
 import it.lam.pptproject.repository.ChartsRepository
+import it.lam.pptproject.repository.TrackingRepository
 
 /**
  * App container for Dependency injection.
  */
 interface AppContainer {
     val chartsRepository: ChartsRepository
+    val trackingRepository: TrackingRepository
 }
 
 /**
@@ -22,5 +24,8 @@ class AppDataContainer(private val context: Context) : AppContainer {
      */
     override val chartsRepository: ChartsRepository by lazy {
         ChartsRepository(AppDatabase.getDatabase(context).statisticsDao())
+    }
+    override val trackingRepository: TrackingRepository by lazy {
+        TrackingRepository(AppDatabase.getDatabase(context).trackingDataDao(), context)
     }
 }

@@ -7,6 +7,7 @@ import com.google.android.gms.fitness.data.LocalDataSet
 import it.lam.pptproject.api.FitnessApiHelper
 import it.lam.pptproject.model.room.AppDatabase
 import it.lam.pptproject.model.room.TrackingData
+import it.lam.pptproject.model.room.TrackingDataDao
 import it.lam.pptproject.utils.Tracker
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +15,8 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 
-class TrackingRepository(private val context: Context) {
+class TrackingRepository(private val trackingDataDao: TrackingDataDao, private val context: Context) {
 
-    private val database: AppDatabase = AppDatabase.getDatabase(context)
 
     fun startTracking() {
         val isWalking = Tracker.getType() == Tracker.RecordType.WALKING
@@ -62,7 +62,7 @@ class TrackingRepository(private val context: Context) {
     private suspend fun saveTrackingData() {
 
         Tracker.setSteps(0)
-        database.trackingDataDao().insert(Tracker.convertToTrackingData())
+        trackingDataDao.insert(Tracker.convertToTrackingData())
 
     }
 
@@ -93,7 +93,7 @@ class TrackingRepository(private val context: Context) {
                         steps = dp.getValue(dp.dataType.fields[0]).asInt(),
                         username = Tracker.getUsername()
                     )
-                    database.trackingDataDao().insert(td)
+                    trackingDataDao.insert(td)
                     // * Si fa in caso segua un dataset vuoto:
                     Tracker.setStartTime(dp.getEndTime(TimeUnit.MILLISECONDS).plus(1))
                 }

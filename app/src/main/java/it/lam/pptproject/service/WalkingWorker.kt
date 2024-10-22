@@ -17,7 +17,7 @@ class WalkingWorker(context: Context, params: WorkerParameters) : CoroutineWorke
         // Recupera i dati dei passi dalla Fitness API
         val steps = retrieveSteps()
 
-        val repository = TrackingRepository(applicationContext)
+        //val repository = TrackingRepository(applicationContext)
 
 
         //repository.saveTrackingData(steps)

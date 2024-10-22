@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import it.lam.pptproject.PPTApplication
 import it.lam.pptproject.ui.viewmodel.ChartsViewModel
+import it.lam.pptproject.ui.viewmodel.HomeViewModel2
 
 /**
  * Provides Factory to create instance of ViewModel for the entire Inventory app
@@ -18,6 +19,10 @@ object AppViewModelProvider {
         // Initializer for ChartsViewModel
         initializer {
             ChartsViewModel(inventoryApplication().container.chartsRepository)
+        }
+
+        initializer {
+            HomeViewModel2(inventoryApplication().container.trackingRepository)
         }
     }
 }
