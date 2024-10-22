@@ -1,5 +1,6 @@
 package it.lam.pptproject.model.room
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -8,6 +9,7 @@ import it.lam.pptproject.utils.Tracker
 @Entity
 data class User(
 
+    @ColumnInfo(name = "username", index = true)
     @PrimaryKey(autoGenerate = false)
     val username: String,
 

@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import dagger.hilt.android.HiltAndroidApp
 import it.lam.pptproject.api.FitnessAPI
+import it.lam.pptproject.data.AppContainer
+import it.lam.pptproject.data.AppDataContainer
 import it.lam.pptproject.repository.TrackingRepository
 import it.lam.pptproject.utils.Tracker
 import it.lam.pptproject.utils.saveTrackingData
@@ -17,18 +19,12 @@ import kotlinx.coroutines.launch
 @HiltAndroidApp
 class PPTApplication : Application(){
 
-    private lateinit var trackingRepository: TrackingRepository
+    lateinit var container: AppContainer
 
-    // TODO: non va....
-    override fun onTerminate() {
-        Log.i("PPTApplication", "Terminating app...")
-        CoroutineScope(Dispatchers.IO).launch {
-
-            Log.i("PPTApplication", "Trying to end the tracking.")
-            // todo: bisognerebbe controllare se è ancora in listening...
-            trackingRepository.endTracking()
-
-            super.onTerminate()
-        }
+    override fun onCreate() {
+        super.onCreate()
+        container = AppDataContainer(this)
     }
+
+
 }

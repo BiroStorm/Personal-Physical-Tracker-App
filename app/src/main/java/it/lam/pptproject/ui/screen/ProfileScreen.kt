@@ -13,7 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import it.lam.pptproject.R
+import it.lam.pptproject.ui.navigation.NavigationDestination
 import it.lam.pptproject.ui.viewmodel.ProfileViewModel
+
+object ProfileDestination : NavigationDestination {
+    override val route = "Profile"
+    override val name = R.string.profile_screen
+    override val icon = R.drawable.account_circle_24px
+}
 
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hiltViewModel()) {

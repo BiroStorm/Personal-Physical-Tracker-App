@@ -10,20 +10,20 @@ import androidx.navigation.compose.composable
 import it.lam.pptproject.ui.screen.HomeScreen
 import it.lam.pptproject.ui.screen.NotificationsScreen
 import it.lam.pptproject.ui.screen.ProfileScreen
-import it.lam.pptproject.ui.screen.SearchScreen
+import it.lam.pptproject.ui.screen.ChartsScreen
 import it.lam.pptproject.ui.screen.LandingScreen
 
 @Composable
-fun NavGraph(navController: NavHostController, contentPadding: PaddingValues) {
+fun NavGraph(navController: NavHostController, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
         startDestination = "landing",
         modifier = Modifier.padding(contentPadding)
     ) {
-        composable("home") { HomeScreen() }
-        composable("search") { SearchScreen() }
+        composable("Home") { HomeScreen() }
+        composable("Charts") { ChartsScreen() }
         composable("notifications") { NotificationsScreen() }
-        composable("profile") { ProfileScreen(navController) }
-        composable("landing") { LandingScreen(navController) }
+        composable("Profile") { ProfileScreen(navController) }
+        composable("Landing") { LandingScreen(navController) }
     }
 }

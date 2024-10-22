@@ -1,8 +1,6 @@
 package it.lam.pptproject.ui.screen
 
 import android.app.Application
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,8 +27,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import it.lam.pptproject.R
 import it.lam.pptproject.di.HomeViewModelFactory
 import it.lam.pptproject.repository.TrackingRepository
+import it.lam.pptproject.ui.navigation.NavigationDestination
 import it.lam.pptproject.ui.viewmodel.HomeViewModel
 import it.lam.pptproject.utils.Tracker
+
+
+object HomeDestination : NavigationDestination {
+    override val route = "Home"
+    override val name = R.string.home_screen
+    override val icon = R.drawable.home_24px
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -4,4 +4,6 @@
     <string name="end_btn">Termina</string>
     <string name="force_permission_txt">Questa applicazione ha bisogna che acconsenti al tracciamento dell\'Attività. Concedi il permesso per continuare a usare l\'app.</string>
     <string name="settings">Apri Impostazioni</string>
+    <string name="screen_charts">Grafici</string>
+    <string name="profile_screen">Profilo</string>
 </resources>

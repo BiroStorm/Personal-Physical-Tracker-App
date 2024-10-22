@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 
 // https://developer.android.com/training/data-storage/room
 
-@Database(entities = [User::class, TrackingData::class], version = 1)
+@Database(entities = [User::class, TrackingData::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun trackingDataDao(): TrackingDataDao
+    abstract fun statisticsDao(): StatisticsDao
 
     companion object {
         @Volatile

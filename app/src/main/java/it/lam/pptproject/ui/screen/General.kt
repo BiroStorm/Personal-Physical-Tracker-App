@@ -5,11 +5,6 @@ import androidx.compose.runtime.Composable
 
 
 @Composable
-fun SearchScreen() {
-    Text("Search Screen")
-}
-
-@Composable
 fun NotificationsScreen() {
     Text("Notifications Screen")
 }
