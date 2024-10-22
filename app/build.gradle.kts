@@ -111,6 +111,11 @@ dependencies {
     implementation(libs.vico.compose.m3)
     implementation(libs.vico.core)
     //implementation(libs.vico.views)
+
+
+    // MPA Android Chart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 }
 
 kapt {

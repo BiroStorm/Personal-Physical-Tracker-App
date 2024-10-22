@@ -1,11 +1,13 @@
 package it.lam.pptproject.model.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import it.lam.pptproject.data.room.TypePercentageData
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Il DAO è un'interfaccia che permette di interragire con il database.
@@ -44,6 +46,21 @@ interface TrackingDataDao {
 interface StatisticsDao {
 
     // * Calcola la percentuale di ogni tipo di attività.
-    @Query("SELECT type, (SUM(type) / (SELECT SUM(type) FROM TrackingData)) * 100 AS percentage FROM TrackingData WHERE username = :username GROUP BY type")
-    suspend fun getPercentuale(username: String): List<TypePercentageData>
+    @Query("""
+        SELECT
+    a.type,
+    SUM(a.endTime - a.startTime) AS value,
+    (SUM(a.endTime - a.startTime) * 100.0) / 
+    (SELECT SUM(a2.endTime - a2.startTime)
+     FROM  trackingdata a2
+     JOIN User u2 ON a2.username = u2.username
+     WHERE u2.active = 1) AS percentage
+FROM trackingdata a
+JOIN User u ON a.username = u.username
+WHERE u.active = 1
+GROUP BY a.type
+
+    """)
+    fun getPercentuale(): Flow<List<TypePercentageData>>
+    // * From: [https://developer.android.com/codelabs/advanced-kotlin-coroutines?hl=en#9]
 }
