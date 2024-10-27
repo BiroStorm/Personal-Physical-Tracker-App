@@ -11,7 +11,6 @@ import it.lam.pptproject.repository.TrackingRepository
  * App container for Dependency injection.
  */
 interface AppContainer {
-    val chartsRepository: ChartsRepository
     val trackingRepository: TrackingRepository
 }
 
@@ -22,9 +21,6 @@ class AppDataContainer(private val context: Context) : AppContainer {
     /**
      * Implementation for [chartsRepository]
      */
-    override val chartsRepository: ChartsRepository by lazy {
-        ChartsRepository(AppDatabase.getDatabase(context).statisticsDao())
-    }
     override val trackingRepository: TrackingRepository by lazy {
         TrackingRepository(AppDatabase.getDatabase(context).trackingDataDao(), context)
     }

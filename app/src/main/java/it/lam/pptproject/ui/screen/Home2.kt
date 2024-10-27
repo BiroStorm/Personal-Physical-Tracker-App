@@ -33,7 +33,7 @@ object HomeDestination2 : NavigationDestination {
 }
 
 @Composable
-fun HomeScreen2(viewModel: HomeViewModel2 = viewModel(factory = AppViewModelProvider.Factory)) {
+fun HomeScreen2(viewModel: HomeViewModel2) {
     val hasStarted = viewModel.hasStarted
 
     Column(

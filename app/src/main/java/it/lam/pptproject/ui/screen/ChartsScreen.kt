@@ -3,6 +3,7 @@ package it.lam.pptproject.ui.screen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import it.lam.pptproject.R
 import it.lam.pptproject.ui.AppViewModelProvider
@@ -21,9 +22,8 @@ object ChartsDestination : NavigationDestination {
 // * Collegamento diretto con il ViewModel.
 @Composable
 fun ChartsScreen(
-    viewModel: ChartsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    viewModel: ChartsViewModel = hiltViewModel(),
 ) {
-
     val percentageData by viewModel.percentage.observeAsState(emptyList())
     PieChart(percentageData)
 }

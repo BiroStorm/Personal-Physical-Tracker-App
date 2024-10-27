@@ -8,14 +8,17 @@ import androidx.lifecycle.asLiveData
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entriesOf
 import com.patrykandpatrick.vico.core.entry.entryModelOf
+import dagger.hilt.android.lifecycle.HiltViewModel
 import it.lam.pptproject.data.room.TypePercentageData
 import it.lam.pptproject.repository.ChartsRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class ChartsViewModel(private val repository: ChartsRepository) : ViewModel() {
+@HiltViewModel
+class ChartsViewModel @Inject constructor (private val repository: ChartsRepository) : ViewModel() {
 
     // * LiveData è read-only, mentre MutableLiveData è read-write.
     val percentage :LiveData<List<TypePercentageData>> = repository.getPercentage().asLiveData()

@@ -18,10 +18,6 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         // Initializer for ChartsViewModel
         initializer {
-            ChartsViewModel(inventoryApplication().container.chartsRepository)
-        }
-
-        initializer {
             HomeViewModel2(inventoryApplication().container.trackingRepository)
         }
     }

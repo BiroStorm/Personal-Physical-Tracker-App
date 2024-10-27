@@ -3,8 +3,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 
     // added
-    id("com.google.dagger.hilt.android")
+    //id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    alias (libs.plugins.hilt.application)
 
 }
 
@@ -79,14 +80,12 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
 
     // HILT
-    implementation(libs.hilt.android)
-
-    kapt(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation (libs.hilt.android)
+    kapt (libs.hilt.android.compiler)
+    implementation (libs.hilt.navigation.compose)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    runtimeOnly(libs.androidx.hilt.navigation.compose)
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
