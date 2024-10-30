@@ -7,4 +7,5 @@
     <string name="screen_charts">Charts</string>
     <string name="home_screen" translatable="false">Home</string>
     <string name="profile_screen">Profile</string>
+    <string name="select_activity_txt">Select Your Activity</string>
 </resources>

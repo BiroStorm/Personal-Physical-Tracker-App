@@ -11,7 +11,7 @@ data class User(
 
     @ColumnInfo(name = "username", index = true)
     @PrimaryKey(autoGenerate = false)
-    val username: String,
+    var username: String,
 
     var active : Boolean?
 )

@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import it.lam.pptproject.R
-import it.lam.pptproject.ui.AppViewModelProvider
 import it.lam.pptproject.ui.charts.PieChart
 import it.lam.pptproject.ui.navigation.NavigationDestination
 import it.lam.pptproject.ui.viewmodel.ChartsViewModel
@@ -17,8 +15,6 @@ object ChartsDestination : NavigationDestination {
     override val icon = R.drawable.baseline_auto_graph_24
 }
 
-
-// ! SENZA USO DI HILT
 // * Collegamento diretto con il ViewModel.
 @Composable
 fun ChartsScreen(

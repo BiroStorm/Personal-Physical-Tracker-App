@@ -18,10 +18,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao {
     @Query("SELECT * FROM user")
-    fun getAll(): List<User>
+    fun getAll(): Flow<List<User>>
 
     @Query("SELECT * FROM user WHERE active IS 1 LIMIT 1")
-    suspend fun findActive(): User?
+    fun findActive(): User?
 
     @Insert(entity = User::class)
     suspend fun insertUser(user: User)
@@ -31,6 +31,12 @@ interface UserDao {
 
     @Delete
     suspend fun delete(user: User)
+
+    @Query("SELECT * FROM user WHERE active IS 1 LIMIT 1")
+    fun findActiveTest(): Flow<User?>
+
+    @Query(" UPDATE user SET active = 0 WHERE active = 1")
+    suspend fun setAllUsersInactive()
 }
 
 @Dao

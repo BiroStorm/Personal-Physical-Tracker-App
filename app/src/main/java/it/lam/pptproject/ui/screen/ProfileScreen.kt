@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,27 +25,26 @@ object ProfileDestination : NavigationDestination {
 }
 
 @Composable
-fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hiltViewModel()) {
-    val username by viewModel.activeUser
+fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
 
-    LaunchedEffect(Unit) {
-        viewModel.fetchActiveUser()
-    }
+    val activeUser by viewModel.activeUser.observeAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        username?.let {
-            Text(text = "Welcome $username", style = MaterialTheme.typography.headlineMedium)
-        } ?: run {
-            Text(text = "No active user found")
+        activeUser?.username?.let {
+            Text(
+                text = it,
+                style = MaterialTheme.typography.labelMedium
+            )
         }
+
         Button(
             onClick = {
                 viewModel.clearActiveUser()
-                navController.navigate("landing")
+
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {

@@ -26,15 +26,3 @@ class ChartsViewModel @Inject constructor (private val repository: ChartsReposit
 }
 
 
-/*
-class ChartsViewModelFactory(private val repository: ChartsRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ChartsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ChartsViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
-
-*/

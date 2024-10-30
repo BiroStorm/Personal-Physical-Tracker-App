@@ -6,4 +6,5 @@
     <string name="settings">Apri Impostazioni</string>
     <string name="screen_charts">Grafici</string>
     <string name="profile_screen">Profilo</string>
+    <string name="select_activity_txt">Seleziona la tua attività</string>
 </resources>

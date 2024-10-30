@@ -1,6 +1,6 @@
 package it.lam.pptproject.ui.screen
 
-import android.app.Application
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,41 +19,35 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import it.lam.pptproject.MainScreen
 import it.lam.pptproject.R
-import it.lam.pptproject.model.room.AppDatabase
-import it.lam.pptproject.di.LandingViewModelFactory
-import it.lam.pptproject.repository.UserRepository
-
-import it.lam.pptproject.ui.viewmodel.LandingViewModel
+import it.lam.pptproject.model.room.User
+import it.lam.pptproject.ui.viewmodel.LoginViewModel
 
 @Composable
-fun LandingScreen(navController: NavController) {
-    val context = LocalContext.current
-    val application = context.applicationContext as Application
-    val userRepository = UserRepository(AppDatabase.getDatabase(context).userDao())
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel(),
+) {
+    val users by viewModel.users.observeAsState(emptyList())
 
-    val viewModel: LandingViewModel = viewModel(
-        factory = LandingViewModelFactory(userRepository, application)
-    )
+    val username = remember { mutableStateOf("") }
 
-    val userName = remember { viewModel.username }
+    val hasUserBeenChosen by viewModel.hasUserBeenChosen
 
-    viewModel.checkActiveUser {
-        navController.navigate("home")
+    if (hasUserBeenChosen) {
+        viewModel.resetUserSelection()
+        MainScreen()
+
     }
-
-    // IF THERE IS NOT AN ACTIVE USER
-    val users = remember { viewModel.users }
-
-
 
     Column(
         modifier = Modifier
@@ -62,16 +56,20 @@ fun LandingScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center
     ) {
         TextField(
-            value = userName.value,
-            onValueChange = { userName.value = it },
-            label = { Text("Enter your name") },
+            value = username.value,
+            onValueChange = {
+                username.value = it
+                Log.i("LandingScreen", "username: ${username.value}")
+            },
+            label = { Text("Enter your username") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                viewModel.saveUsername()
-                navController.navigate("home")
+
+                val newUser = User(username.value, true)
+                viewModel.insertNewUser(newUser)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -79,7 +77,7 @@ fun LandingScreen(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn {
-            items(users.value) { user ->
+            items(users) { user ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -91,9 +89,7 @@ fun LandingScreen(navController: NavController) {
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                viewModel.setActiveUser(user) {
-                                    navController.navigate("home")
-                                }
+                                viewModel.setActiveUser(user)
                             }
                     )
                     IconButton(

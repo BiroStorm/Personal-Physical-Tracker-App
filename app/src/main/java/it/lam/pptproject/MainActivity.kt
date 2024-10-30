@@ -78,15 +78,9 @@ class MainActivity : ComponentActivity() {
 
 }
 
-
-@Composable
-fun MainScreen(navController: NavHostController = rememberNavController()) {
-    InventoryNavHost(navController = navController)
-}
-
 @Composable
 fun InventoryNavHost(
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
 ) {
 
     val listOfDestination = listOf(
@@ -115,11 +109,19 @@ fun BottomNavigationBar(navController: NavController, items: List<NavigationDest
 
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(imageVector = ImageVector.vectorResource(item.icon), contentDescription = stringResource(item.name)) },
+                icon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(item.icon),
+                        contentDescription = stringResource(item.name)
+                    )
+                },
                 label = { Text(stringResource(item.name)) },
                 selected = currentRoute == item.route,
                 onClick = {
-                    Log.i("MainActivity", "Navigating to ${item.route} and currentRoute is $currentRoute")
+                    Log.i(
+                        "MainActivity",
+                        "Navigating to ${item.route} and currentRoute is $currentRoute"
+                    )
                     navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) {
