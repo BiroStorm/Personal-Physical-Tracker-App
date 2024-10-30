@@ -39,7 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import it.lam.pptproject.R
 import it.lam.pptproject.ui.navigation.NavigationDestination
 import it.lam.pptproject.ui.viewmodel.HomeViewModel2
-import it.lam.pptproject.utils.Tracker
+import it.lam.pptproject.utils.Utils
 
 
 object HomeDestination2 : NavigationDestination {
@@ -53,7 +53,7 @@ fun HomeScreen2(viewModel: HomeViewModel2 = hiltViewModel()) {
     //val hasStarted = viewModel.hasStarted
     var showDialog by remember { mutableStateOf(false) }
 
-    val selectedTracker by viewModel.isStarted.collectAsState(false)
+    val isStarted by viewModel.isStarted.collectAsState(false)
 
 
     Column(
@@ -64,25 +64,29 @@ fun HomeScreen2(viewModel: HomeViewModel2 = hiltViewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LargeStartButton(onClick = {
-            viewModel.switchState()
             // * Open popup to choose the type of tracking.
-            if(!selectedTracker!!) showDialog = true
+            if (!isStarted!!) showDialog = true
+            else viewModel.switchState()
 
-        }, selectedTracker!!)
+        }, isStarted!!)
     }
 
     if (showDialog) {
         ChooseTrackingTypePopup(
-            onDismiss = { showDialog = false }
+            onDismiss = { showDialog = false },
+            onAccept = {
+                viewModel.switchState()
+                showDialog = false
+            }
         )
     }
 
 }
 
 @Composable
-private fun ChooseTrackingTypePopup(onDismiss: () -> Unit) {
+private fun ChooseTrackingTypePopup(onDismiss: () -> Unit, onAccept: () -> Unit) {
     // * Popup per scegliere il tipo di tracking.
-    val options = Tracker.RecordType.entries.map { it.name }
+    val options = Utils.RecordType.entries.map { it.name }
     var selectedOption by remember { mutableStateOf(options[0]) }  // Opzione selezionata di default
 
     Dialog(onDismissRequest = onDismiss) {
@@ -105,7 +109,7 @@ private fun ChooseTrackingTypePopup(onDismiss: () -> Unit) {
                 // Lista di radio button
                 LazyColumn {
                     items(options) { option ->
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -125,11 +129,22 @@ private fun ChooseTrackingTypePopup(onDismiss: () -> Unit) {
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier.align(Alignment.End)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(stringResource(R.string.start_btn))
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Text(stringResource(R.string.cancel_btn))
+                    }
+                    Button(
+                        onClick = onAccept,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Text(stringResource(R.string.start_btn))
+                    }
                 }
             }
         }

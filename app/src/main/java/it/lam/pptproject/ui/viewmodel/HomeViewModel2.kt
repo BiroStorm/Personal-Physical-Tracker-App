@@ -35,8 +35,16 @@ class HomeViewModel2 @Inject constructor(
                 dataStoreRepository.setTracking(false)
             Log.i("HomeViewModel2", "switchState: ${isStarted.first()}")
         }
-
     }
+
+    fun startTracking() {
+        hasStarted = true
+        viewModelScope.launch {
+            dataStoreRepository.setTracking(true)
+        }
+    }
+
+
 
 
 }

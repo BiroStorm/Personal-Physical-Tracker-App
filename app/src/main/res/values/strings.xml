@@ -8,4 +8,5 @@
     <string name="home_screen" translatable="false">Home</string>
     <string name="profile_screen">Profile</string>
     <string name="select_activity_txt">Select Your Activity</string>
+    <string name="cancel_btn">Cancel</string>
 </resources>
