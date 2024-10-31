@@ -48,11 +48,12 @@ class HomeViewModel2 @Inject constructor(
     }
 
     // * Richiamato dalla UI per evitare un Bug.
-    fun startTrackingService() {
+    fun startTrackingService(selectedOption: String) {
         viewModelScope.launch {
             Intent(appContext, TrackingService::class.java).also {
                 it.action = TrackingService.Actions.START.toString()
-                appContext.startForegroundService(it)
+                it.putExtra("selectedOption", selectedOption)
+                appContext.startService(it)
             }
         }
     }
@@ -61,7 +62,7 @@ class HomeViewModel2 @Inject constructor(
         viewModelScope.launch {
             Intent(appContext, TrackingService::class.java).also {
                 it.action = TrackingService.Actions.STOP.toString()
-                appContext.startForegroundService(it)
+                appContext.startService(it)
             }
         }
     }

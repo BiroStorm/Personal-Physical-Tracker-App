@@ -22,7 +22,7 @@ class PPTApplication : Application() {
             NotificationChannel(
                 "tracking",
                 "Running Notification",
-                NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationManager.IMPORTANCE_LOW)
         val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
     }
