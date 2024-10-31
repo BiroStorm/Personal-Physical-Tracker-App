@@ -1,5 +1,6 @@
 package it.lam.pptproject.ui.screen
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,11 +36,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.hilt.navigation.compose.hiltViewModel
 import it.lam.pptproject.R
+import it.lam.pptproject.service.TrackingService
 import it.lam.pptproject.ui.navigation.NavigationDestination
 import it.lam.pptproject.ui.viewmodel.HomeViewModel2
 import it.lam.pptproject.utils.Utils
+import kotlin.coroutines.coroutineContext
 
 
 object HomeDestination2 : NavigationDestination {
@@ -77,6 +81,7 @@ fun HomeScreen2(viewModel: HomeViewModel2 = hiltViewModel()) {
             onAccept = {
                 viewModel.switchState()
                 showDialog = false
+                viewModel.startTrackingService()
             }
         )
     }

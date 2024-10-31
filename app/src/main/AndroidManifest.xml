@@ -8,6 +8,12 @@
     
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+
+
     <application
         android:name=".PPTApplication"
         android:allowBackup="false"
@@ -29,6 +35,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.TrackingService"
+            android:foregroundServiceType="health"
+            android:exported="false">
+        </service>
+
     </application>
 
 </manifest>

@@ -1,5 +1,7 @@
 package it.lam.pptproject.ui.viewmodel
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,7 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import it.lam.pptproject.data.datastore.DataStoreRepository
+import it.lam.pptproject.service.TrackingService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -16,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel2 @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
+    @ApplicationContext private val appContext: Context
 ) : ViewModel() {
     var hasStarted by mutableStateOf(false)
         private set
@@ -30,21 +35,36 @@ class HomeViewModel2 @Inject constructor(
     fun switchState() {
         hasStarted = !hasStarted
         viewModelScope.launch {
-            if (hasStarted) dataStoreRepository.setTracking(true)
-            else
+            if (hasStarted){
+                dataStoreRepository.setTracking(true)
+            }
+            else{
                 dataStoreRepository.setTracking(false)
+                stopTrackingService()
+            }
+
             Log.i("HomeViewModel2", "switchState: ${isStarted.first()}")
         }
     }
 
-    fun startTracking() {
-        hasStarted = true
+    // * Richiamato dalla UI per evitare un Bug.
+    fun startTrackingService() {
         viewModelScope.launch {
-            dataStoreRepository.setTracking(true)
+            Intent(appContext, TrackingService::class.java).also {
+                it.action = TrackingService.Actions.START.toString()
+                appContext.startForegroundService(it)
+            }
         }
     }
 
-
+    private fun stopTrackingService(){
+        viewModelScope.launch {
+            Intent(appContext, TrackingService::class.java).also {
+                it.action = TrackingService.Actions.STOP.toString()
+                appContext.startForegroundService(it)
+            }
+        }
+    }
 
 
 }
