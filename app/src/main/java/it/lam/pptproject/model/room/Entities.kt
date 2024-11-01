@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import it.lam.pptproject.utils.Tracker
+import it.lam.pptproject.utils.Utils
 
 @Entity
 data class User(
@@ -20,10 +20,10 @@ data class User(
 data class TrackingData(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val type: Tracker.RecordType,
+    val type: Utils.RecordType,
     val startTime: Long,
     val endTime: Long,
     val values: String,
-    val steps: Int?,
+    val steps: Int = 0,
     val username: String
 )

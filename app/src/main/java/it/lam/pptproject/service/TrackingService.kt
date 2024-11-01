@@ -7,9 +7,21 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import dagger.hilt.android.AndroidEntryPoint
+import it.lam.pptproject.data.datastore.DataStoreRepository
+import it.lam.pptproject.model.room.AppDatabase
+import it.lam.pptproject.model.room.TrackingData
+import it.lam.pptproject.utils.Utils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.Locale
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class TrackingService : Service() {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -17,6 +29,14 @@ class TrackingService : Service() {
     private val notificationChannelId = "tracking"
     private lateinit var notificationManager: NotificationManager
     private var trackingType = ""
+
+    @Inject
+    lateinit var database: AppDatabase
+
+    @Inject
+    lateinit var dataStore: DataStoreRepository
+
+    private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
 
     override fun onCreate() {
         super.onCreate()
@@ -64,14 +84,36 @@ class TrackingService : Service() {
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .build()
     }
+
     private fun updateNotification(timeText: String) {
         val notification = createNotification(timeText)
         notificationManager.notify(1, notification)
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         handler.removeCallbacks(timerRunnable)
+        saveDataIntoDB()
+
+
+        //serviceScope.cancel()
+        Log.i("TrackingService", "Service destroyed")
+        super.onDestroy()
+    }
+
+    private fun saveDataIntoDB() {
+        serviceScope.launch {
+            val newData = TrackingData(
+                type = Utils.RecordType.valueOf(trackingType),
+                startTime = startTime,
+                endTime = System.currentTimeMillis(),
+                values = "",
+                steps = 0,
+                username = dataStore.getString("username") ?: "unknown"
+            )
+
+            database.trackingDataDao().insert(newData)
+            Log.i("TrackingService", "Data saved into DB")
+        }
     }
 
     enum class Actions {

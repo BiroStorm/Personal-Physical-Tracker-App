@@ -12,6 +12,7 @@ import it.lam.pptproject.data.ButtonStateDataStore
 import it.lam.pptproject.data.UserPreferencesDataStore
 import it.lam.pptproject.repository.TrackingRepository
 import it.lam.pptproject.utils.Tracker
+import it.lam.pptproject.utils.Utils
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -26,8 +27,8 @@ class HomeViewModel(
     private val context = application.applicationContext
     private val _isTerminated = mutableStateOf(false)
     val isTerminated: State<Boolean> get() = _isTerminated
-    private val _currentType = mutableStateOf(Tracker.RecordType.WALKING)
-    val currentType: State<Tracker.RecordType> get() = _currentType
+    private val _currentType = mutableStateOf(Utils.RecordType.WALKING)
+    val currentType: State<Utils.RecordType> get() = _currentType
 
     init {
         viewModelScope.launch {
@@ -65,7 +66,7 @@ class HomeViewModel(
         }
     }
 
-    fun updateTrackerType(type: Tracker.RecordType) {
+    fun updateTrackerType(type: Utils.RecordType) {
         _currentType.value = type
         Tracker.setType(type)
     }

@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private var userRepository: UserRepository,
-    private val dsRepository: DataStoreRepository,
+    private val datastore: DataStoreRepository,
 ) : ViewModel() {
 
     val users: LiveData<List<User>> = userRepository.getAllUser().asLiveData()
@@ -31,8 +31,7 @@ class LoginViewModel @Inject constructor(
             user.active = true
             userRepository.updateUser(user)
             isUserSelected.value = true
-            dsRepository.putString("username", user.username)
-
+            datastore.putString("username", user.username)
         }
     }
 

@@ -2,24 +2,26 @@ package it.lam.pptproject.repository
 
 import android.content.Context
 import android.util.Log
-import androidx.work.WorkManager
 import com.google.android.gms.fitness.data.LocalDataSet
 import it.lam.pptproject.api.FitnessApiHelper
-import it.lam.pptproject.model.room.AppDatabase
 import it.lam.pptproject.model.room.TrackingData
 import it.lam.pptproject.model.room.TrackingDataDao
 import it.lam.pptproject.utils.Tracker
+import it.lam.pptproject.utils.Utils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 
-class TrackingRepository(private val trackingDataDao: TrackingDataDao, private val context: Context) {
+class TrackingRepository(
+    private val trackingDataDao: TrackingDataDao,
+    private val context: Context,
+) {
 
 
     fun startTracking() {
-        val isWalking = Tracker.getType() == Tracker.RecordType.WALKING
+        val isWalking = Tracker.getType() == Utils.RecordType.WALKING
         start(isWalking)
     }
 
@@ -44,12 +46,12 @@ class TrackingRepository(private val trackingDataDao: TrackingDataDao, private v
         Tracker.start()
     }
 
-    suspend fun endTracking(){
+    suspend fun endTracking() {
 
-        val isWalking = Tracker.getType() == Tracker.RecordType.WALKING
+        val isWalking = Tracker.getType() == Utils.RecordType.WALKING
         if (isWalking) {
             saveWalkingData()
-        }else{
+        } else {
             Tracker.stop()
             saveTrackingData()
         }
@@ -69,12 +71,12 @@ class TrackingRepository(private val trackingDataDao: TrackingDataDao, private v
     private suspend fun saveWalkingData() {
         val stepList: List<LocalDataSet> = retrieveStepList()
         for (dataSet in stepList) {
-            if(dataSet.dataPoints.isEmpty()){
+            if (dataSet.dataPoints.isEmpty()) {
                 // * Nel caso in cui non siano stati registrati steps...
                 // * Registrare solamente i dati di inizio e fine con step 0.
                 Tracker.stop()
                 saveTrackingData()
-            }else {
+            } else {
                 // * Nel caso in cui ci siano dati da salvare...
                 for (dp in dataSet.dataPoints) {
                     // * Nota: In realtà dataSet.dataPoints contiene solo 1 elemento.
@@ -86,7 +88,7 @@ class TrackingRepository(private val trackingDataDao: TrackingDataDao, private v
                                 "\nSteps: ${dp.getValue(dp.dataType.fields[0]).asInt()}"
                     )
                     val td = TrackingData(
-                        type = Tracker.RecordType.WALKING,
+                        type = Utils.RecordType.WALKING,
                         startTime = dp.getStartTime(TimeUnit.MILLISECONDS),
                         endTime = dp.getEndTime(TimeUnit.MILLISECONDS),
                         values = "",
@@ -116,15 +118,15 @@ class TrackingRepository(private val trackingDataDao: TrackingDataDao, private v
     }
 
 
-    suspend fun printDati(){
+    suspend fun printDati() {
         Log.d("TrackingRepository", "printDati")
         val stepList: List<LocalDataSet> = retrieveStepList()
 
         for (dataSet in stepList) {
             Log.d("TrackingRepository", "Lettura dati dal dataset")
-            if(dataSet.dataPoints.isEmpty()){
+            if (dataSet.dataPoints.isEmpty()) {
                 Log.d("TrackingRepository", "Empty dataset")
-            }else {
+            } else {
                 for (dp in dataSet.dataPoints) {
                     // * Nel caso in cui ci siano dati da salvare...
                     Log.d(
