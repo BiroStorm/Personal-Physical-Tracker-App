@@ -24,6 +24,13 @@ class DataStoreImpl @Inject constructor(
     private val context: Context,
 ) : DataStoreRepository {
 
+    override suspend fun initializeDefaults() {
+        val username : Boolean? = isTracking().first()
+        if(username == null){
+            setTracking(false)
+        }
+    }
+
     override suspend fun putString(key: String, value: String) {
         val preferencesKey = stringPreferencesKey(key)
         context.dataStore.edit { preferences ->

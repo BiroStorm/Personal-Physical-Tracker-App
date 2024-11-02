@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val trackingRepository: TrackingRepository,
-    application: Application
+    application: Application,
 ) : AndroidViewModel(application) {
 
 
@@ -72,13 +72,11 @@ class HomeViewModel(
     }
 
 
-
     private fun checkPermissions(): Boolean {
         return context.checkSelfPermission(
             Manifest.permission.ACTIVITY_RECOGNITION
         ) == PackageManager.PERMISSION_GRANTED
     }
-
 
 
 }

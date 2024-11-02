@@ -1,6 +1,6 @@
 package it.lam.pptproject
 
-import android.os.Build
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -20,14 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.fitness.LocalRecordingClient
 import dagger.hilt.android.AndroidEntryPoint
 import it.lam.pptproject.ui.navigation.NavGraph
 import it.lam.pptproject.ui.navigation.NavigationDestination
@@ -46,25 +43,25 @@ class MainActivity : ComponentActivity() {
     ) { isGranted: Boolean ->
         if (!isGranted) {
             PermissionManager.forcePermissionRequest(this)
+        } else {
+
+            (application as PPTApplication).subscribeToStepCount()
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        // Perform a Play Services version check
-        val hasMinPlayServices = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-            this,
-            LocalRecordingClient.LOCAL_RECORDING_CLIENT_MIN_VERSION_CODE
-        )
-
-        if (hasMinPlayServices != ConnectionResult.SUCCESS) {
-
-            Log.w("MainActivity", "Google Play Services troppo vecchia!")
+    private fun checkAndRequestPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACTIVITY_RECOGNITION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            (application as PPTApplication).subscribeToStepCount()
+        } else {
+            activityRecognitionPermissionRequest.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
         }
 
-        activityRecognitionPermissionRequest.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
-
+        /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(
                 this,
@@ -72,6 +69,15 @@ class MainActivity : ComponentActivity() {
                 0
             )
         }
+
+         */
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        checkAndRequestPermission()
+
 
         enableEdgeToEdge()
         setContent {

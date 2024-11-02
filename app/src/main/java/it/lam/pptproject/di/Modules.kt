@@ -1,6 +1,8 @@
 package it.lam.pptproject.di
 
 import android.content.Context
+import com.google.android.gms.fitness.FitnessLocal
+import com.google.android.gms.fitness.LocalRecordingClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,6 +51,11 @@ object ChartsRepositoryModule {
     @Singleton
     @Provides
     fun provideUserRepository(userDao: UserDao): UserRepository = UserRepositoryImpl(userDao)
+
+    @Singleton
+    @Provides
+    fun provideRecordingClient(@ApplicationContext app: Context): LocalRecordingClient =
+        FitnessLocal.getLocalRecordingClient(app)
 
 
 

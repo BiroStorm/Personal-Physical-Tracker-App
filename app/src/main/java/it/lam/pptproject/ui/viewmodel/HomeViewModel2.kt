@@ -20,9 +20,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel2 @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
-    @ApplicationContext private val appContext: Context
+    @ApplicationContext private val appContext: Context,
 ) : ViewModel() {
-    var hasStarted by mutableStateOf(false)
+    private var hasStarted by mutableStateOf(false)
         private set
 
 
@@ -35,10 +35,9 @@ class HomeViewModel2 @Inject constructor(
     fun switchState() {
         hasStarted = !hasStarted
         viewModelScope.launch {
-            if (hasStarted){
+            if (hasStarted) {
                 dataStoreRepository.setTracking(true)
-            }
-            else{
+            } else {
                 dataStoreRepository.setTracking(false)
                 stopTrackingService()
             }
@@ -58,7 +57,7 @@ class HomeViewModel2 @Inject constructor(
         }
     }
 
-    private fun stopTrackingService(){
+    private fun stopTrackingService() {
         viewModelScope.launch {
             Intent(appContext, TrackingService::class.java).also {
                 it.action = TrackingService.Actions.STOP.toString()

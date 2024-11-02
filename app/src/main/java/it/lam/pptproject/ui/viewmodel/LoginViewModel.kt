@@ -42,6 +42,7 @@ class LoginViewModel @Inject constructor(
     fun insertNewUser(user: User) {
         viewModelScope.launch {
             userRepository.insertUser(user)
+            setActiveUser(user)
         }
     }
 

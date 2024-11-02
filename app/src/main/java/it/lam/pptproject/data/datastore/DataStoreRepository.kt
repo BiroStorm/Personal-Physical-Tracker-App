@@ -10,5 +10,6 @@ interface DataStoreRepository {
     suspend fun getInt(key: String): Int?
     fun isTracking(): Flow<Boolean?>
     suspend fun setTracking(value: Boolean)
+    suspend fun initializeDefaults()
 
 }

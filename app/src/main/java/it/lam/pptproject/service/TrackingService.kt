@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.fitness.LocalRecordingClient
 import dagger.hilt.android.AndroidEntryPoint
 import it.lam.pptproject.data.datastore.DataStoreRepository
 import it.lam.pptproject.model.room.AppDatabase
@@ -17,6 +18,7 @@ import it.lam.pptproject.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -35,6 +37,9 @@ class TrackingService : Service() {
 
     @Inject
     lateinit var dataStore: DataStoreRepository
+
+    @Inject
+    lateinit var localRecordingClient: LocalRecordingClient
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
 
@@ -92,28 +97,34 @@ class TrackingService : Service() {
 
     override fun onDestroy() {
         handler.removeCallbacks(timerRunnable)
-        saveDataIntoDB()
+        serviceScope.launch {
+
+            // TODO: Controllare che sia Walking, nel caso usare il LocalRecordingClient.
 
 
-        //serviceScope.cancel()
+            saveDataIntoDB()
+
+            serviceScope.cancel()
+        }
+
         Log.i("TrackingService", "Service destroyed")
         super.onDestroy()
     }
 
-    private fun saveDataIntoDB() {
-        serviceScope.launch {
-            val newData = TrackingData(
-                type = Utils.RecordType.valueOf(trackingType),
-                startTime = startTime,
-                endTime = System.currentTimeMillis(),
-                values = "",
-                steps = 0,
-                username = dataStore.getString("username") ?: "unknown"
-            )
+    private suspend fun saveDataIntoDB() {
+        val newData = TrackingData(
+            type = Utils.RecordType.valueOf(trackingType),
+            startTime = startTime,
+            endTime = System.currentTimeMillis(),
+            values = "",
+            steps = 0,
+            username = dataStore.getString("username")!!
+        )
 
-            database.trackingDataDao().insert(newData)
-            Log.i("TrackingService", "Data saved into DB")
-        }
+        Log.i("TrackingService", "Data to save: $newData")
+
+        database.trackingDataDao().insert(newData)
+        Log.i("TrackingService", "Data saved into DB")
     }
 
     enum class Actions {
