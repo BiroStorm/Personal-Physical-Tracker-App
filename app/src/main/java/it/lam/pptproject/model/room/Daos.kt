@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import it.lam.pptproject.data.room.MonthlySteps
 import it.lam.pptproject.data.room.TypePercentageData
 import kotlinx.coroutines.flow.Flow
 
@@ -69,4 +70,15 @@ GROUP BY a.type
     """)
     fun getPercentuale(): Flow<List<TypePercentageData>>
     // * From: [https://developer.android.com/codelabs/advanced-kotlin-coroutines?hl=en#9]
+
+    @Query("""
+    SELECT strftime('%Y-%m', datetime(startTime / 1000, 'unixepoch')) AS month, SUM(steps) AS totalSteps
+    FROM TrackingData t JOIN User u 
+    ON t.username = u.username
+    WHERE u.active = 1 
+    GROUP BY month
+    ORDER BY month
+""")
+    fun getMonthlySteps(): Flow<List<MonthlySteps>>
+
 }

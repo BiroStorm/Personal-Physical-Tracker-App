@@ -8,4 +8,6 @@
     <string name="profile_screen">Profilo</string>
     <string name="select_activity_txt">Seleziona la tua attività</string>
     <string name="cancel_btn">Cancella</string>
+    <string name="percentage_for_actvity_txt">Percentuale di Attività</string>
+    <string name="steps_per_month_txt">Passi per mesi</string>
 </resources>
