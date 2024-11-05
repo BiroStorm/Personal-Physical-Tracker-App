@@ -30,7 +30,6 @@ import it.lam.pptproject.ui.navigation.NavGraph
 import it.lam.pptproject.ui.navigation.NavigationDestination
 import it.lam.pptproject.ui.screen.ChartsDestination
 import it.lam.pptproject.ui.screen.HomeDestination
-import it.lam.pptproject.ui.screen.HomeDestination2
 import it.lam.pptproject.ui.screen.ProfileDestination
 import it.lam.pptproject.ui.theme.PPTProjectTheme
 import it.lam.pptproject.utils.PermissionManager
@@ -100,7 +99,6 @@ fun InventoryNavHost(
 
     val listOfDestination = listOf(
         HomeDestination,
-        HomeDestination2,
         ChartsDestination,
         ProfileDestination
     )
