@@ -23,11 +23,12 @@
         <receiver
             android:name=".service.DetectedActivityReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
-        <receiver
-            android:name=".service.ActivityTransitionReceiver"
-            android:enabled="true"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.location.ACTIVITY_RECOGNITION" />
+                <action android:name="it.lam.pptproject.TerminateDAR" />
+            </intent-filter>
+        </receiver>
 
         <service android:name=".service.ActivityDetectionService" />
 
@@ -47,13 +48,5 @@
             android:exported="false"
             android:foregroundServiceType="health" />
 
-        <receiver
-            android:name=".service.ActivityDetectionReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.location.ACTIVITY_TRANSITION_ACTION" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>

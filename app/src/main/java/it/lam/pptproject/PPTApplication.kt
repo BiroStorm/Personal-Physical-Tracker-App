@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.IntentFilter
 import android.util.Log
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -12,6 +13,7 @@ import com.google.android.gms.fitness.LocalRecordingClient
 import com.google.android.gms.fitness.data.LocalDataType
 import dagger.hilt.android.HiltAndroidApp
 import it.lam.pptproject.data.datastore.DataStoreRepository
+import it.lam.pptproject.service.DetectedActivityReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,10 +25,12 @@ class PPTApplication : Application() {
 
     private lateinit var localRecordingClient: LocalRecordingClient
 
+    private val detectedActivityReceiver = DetectedActivityReceiver()
 
     @Inject
     lateinit var dataStoreRepository: DataStoreRepository
 
+    @SuppressLint("InlinedApi")
     override fun onCreate() {
         super.onCreate()
 
@@ -48,6 +52,10 @@ class PPTApplication : Application() {
         }
 
         localRecordingClient = FitnessLocal.getLocalRecordingClient(this)
+
+        // * Registrazione del BroadcastReceiver, necessario per attivare il BroadcastReceiver prima.
+        val filter = IntentFilter("it.lam.pptproject.TerminateDAR")
+        registerReceiver(detectedActivityReceiver, filter, RECEIVER_NOT_EXPORTED)
 
     }
 

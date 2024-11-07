@@ -45,10 +45,29 @@ class DetectedActivityReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d("DAR", "Intent di DAR!")
+        if (intent.action == "it.lam.pptproject.TerminateDAR") {
+            Log.d("DAR", "DAR ha ricevuto il segnato di terminazione!")
+            handleTermination()
+        }
         if (ActivityRecognitionResult.hasResult(intent)) {
             val result = ActivityRecognitionResult.extractResult(intent)
             result?.let { handleDetectedActivities(it.probableActivities, context) }
         }
+    }
+
+    private fun handleTermination() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val lastActivity = dataStore.getString("lastActivity") ?: ""
+            if (lastActivity.isBlank() || lastActivity.isEmpty()) {
+                Log.d("DAR", "Non c'era nessuna attività registrata")
+            } else {
+                val oldStartTime = dataStore.getStartTime()
+                saveIntoDB(lastActivity, oldStartTime)
+                dataStore.putString("lastActivity", "")
+                dataStore.setStartTime(0)
+            }
+        }
+
     }
 
     private fun handleDetectedActivities(
@@ -84,13 +103,13 @@ class DetectedActivityReceiver : BroadcastReceiver() {
             oldStartTime = dataStore.getStartTime()
             lastActivity = dataStore.getString("lastActivity") ?: ""
         }.invokeOnCompletion {
-            Log.d("DAR", "Old Start time: $oldStartTime")
-            Log.d("DAR", "Detected activity: $activity but last Activity was $lastActivity")
+            Log.d("DAR", "1 Old Start time: $oldStartTime")
+            Log.d("DAR", "2 Detected activity: $activity but last Activity was $lastActivity")
 
             // * Se l'attività è diversa da quella precedente.
             Log.d(
                 "DAR",
-                "Checking if $activity è uguale a $lastActivity : ${
+                "3 Checking if $activity è uguale a $lastActivity : ${
                     lastActivity.equals(
                         activity.name,
                         true
@@ -99,14 +118,14 @@ class DetectedActivityReceiver : BroadcastReceiver() {
             )
             if (!lastActivity.equals(activity.name, true)) {
 
-                if(lastActivity != "") {
+                if (lastActivity != "") {
                     // * Il primo caso quando non c'era nessuna attività registrata prima.
                     saveIntoDB(lastActivity, oldStartTime)
                 }
 
                 // * Aggiorniamo i valori nel DS.
                 CoroutineScope(Dispatchers.IO).launch {
-                    Log.d("DAR", "Updating DS con last activity: ${activity.name}")
+                    Log.d("DAR", "5 Updating DS con last activity: ${activity.name}")
                     dataStore.putString("lastActivity", activity.name)
                     dataStore.setStartTime(System.currentTimeMillis())
                 }
@@ -126,7 +145,7 @@ class DetectedActivityReceiver : BroadcastReceiver() {
             CoroutineScope(Dispatchers.IO).launch {
                 saveWalking(oldStartTime)
             }.invokeOnCompletion {
-                Log.d("DAR", "Ha completato il coroutine per saveWalking")
+                Log.d("DAR", "4A Ha completato il coroutine per saveWalking")
             }
         } else {
             // * Salviamolo normalmente
@@ -139,7 +158,7 @@ class DetectedActivityReceiver : BroadcastReceiver() {
                     steps = 0,
                     username = dataStore.getString("username")!!
                 )
-                Log.d("DAR", "Not Walking Data Saved: $newData")
+                Log.d("DAR", "4B Not Walking Data Saved: $newData")
                 database.trackingDataDao().insert(newData)
             }
         }
@@ -147,9 +166,7 @@ class DetectedActivityReceiver : BroadcastReceiver() {
     }
 
     private fun saveWalking(startTime: Long): CompletableDeferred<Unit> {
-
         val completion = CompletableDeferred<Unit>()
-
         val endTime = System.currentTimeMillis()
         val readRequest =
             LocalDataReadRequest.Builder()
@@ -161,29 +178,44 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         localRecordingClient.readData(readRequest).addOnSuccessListener { response ->
 
             val jobs = mutableListOf<Job>()
+            Log.d("DAR", "Data read success!")
 
             for (dataSet in response.buckets.flatMap { it.dataSets }) {
                 Log.d("FitnessAPI", "Data returned for Data type: ${dataSet.dataType.name}")
-                for (dp in dataSet.dataPoints) {
-                    Log.d("FitnessAPI", "Data point:")
-                    Log.d("FitnessAPI", "\tStart: ${dp.getStartTime(TimeUnit.MILLISECONDS)}")
-                    Log.d("FitnessAPI", "\tEnd: ${dp.getEndTime(TimeUnit.MILLISECONDS)}")
-                    Log.d("FitnessAPI", "\tValue: ${dp.getValue(dp.dataType.fields[0])}")
-
-                    // * Extraction from data point
-                    val startValue = dp.getStartTime(TimeUnit.MILLISECONDS)
-                    val endValue = dp.getEndTime(TimeUnit.MILLISECONDS)
-                    val steps = dp.getValue(dp.dataType.fields[0]).asInt()
-
-                    // * Saving into DB
+                if (dataSet.dataPoints.isEmpty()) {
+                    // * Registriamo anche se non sono stati registrati passi.
                     CoroutineScope(Dispatchers.IO).launch {
                         saveDataIntoDB(
                             Utils.RecordType.WALKING,
-                            startValue,
-                            endValue,
+                            startTime,
+                            endTime,
                             "",
-                            steps
+                            0
                         )
+                    }
+
+                } else {
+                    for (dp in dataSet.dataPoints) {
+                        Log.d("FitnessAPI", "Data point:")
+                        Log.d("FitnessAPI", "\tStart: ${dp.getStartTime(TimeUnit.MILLISECONDS)}")
+                        Log.d("FitnessAPI", "\tEnd: ${dp.getEndTime(TimeUnit.MILLISECONDS)}")
+                        Log.d("FitnessAPI", "\tValue: ${dp.getValue(dp.dataType.fields[0])}")
+
+                        // * Extraction from data point
+                        val startValue = dp.getStartTime(TimeUnit.MILLISECONDS)
+                        val endValue = dp.getEndTime(TimeUnit.MILLISECONDS)
+                        val steps = dp.getValue(dp.dataType.fields[0]).asInt()
+
+                        // * Saving into DB
+                        CoroutineScope(Dispatchers.IO).launch {
+                            saveDataIntoDB(
+                                Utils.RecordType.WALKING,
+                                startValue,
+                                endValue,
+                                "",
+                                steps
+                            )
+                        }
                     }
                 }
             }

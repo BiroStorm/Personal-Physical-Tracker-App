@@ -122,6 +122,10 @@ class ActivityDetectionService : Service() {
     }
 
     override fun onDestroy() {
+        // * Invia un broadcast per segnalare la terminazione del Service al DAR
+        Log.d("ActivityDetectionService", "Invio broadcast per terminare il DAR")
+        sendBroadcast(Intent("it.lam.pptproject.TerminateDAR"))
+
         Log.d("ActivityDetectionService", "Service distrutto!")
         super.onDestroy()
         removeActivityUpdates()
