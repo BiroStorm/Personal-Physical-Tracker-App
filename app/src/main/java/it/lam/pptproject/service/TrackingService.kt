@@ -90,7 +90,7 @@ class TrackingService : Service() {
     private fun createNotification(timeText: String): Notification {
         return NotificationCompat.Builder(this, notificationChannelId)
             .setContentTitle("Tracking $trackingType")
-            .setContentText("Tempo trascorso: $timeText")
+            .setContentText("Timer: $timeText")
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .build()
     }

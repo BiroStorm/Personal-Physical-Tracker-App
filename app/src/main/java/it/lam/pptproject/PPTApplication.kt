@@ -11,8 +11,6 @@ import com.google.android.gms.fitness.FitnessLocal
 import com.google.android.gms.fitness.LocalRecordingClient
 import com.google.android.gms.fitness.data.LocalDataType
 import dagger.hilt.android.HiltAndroidApp
-import it.lam.pptproject.data.AppContainer
-import it.lam.pptproject.data.AppDataContainer
 import it.lam.pptproject.data.datastore.DataStoreRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +21,6 @@ import javax.inject.Inject
 @HiltAndroidApp
 class PPTApplication : Application() {
 
-    private lateinit var container: AppContainer
     private lateinit var localRecordingClient: LocalRecordingClient
 
 
@@ -32,7 +29,6 @@ class PPTApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        container = AppDataContainer(this)
 
         // Initialize the DataStore
         CoroutineScope(Dispatchers.IO).launch {
@@ -81,14 +77,27 @@ class PPTApplication : Application() {
 
     private fun setupNotificationChannel() {
 
+        val notificationManager = getSystemService(NotificationManager::class.java)
         val channel =
             NotificationChannel(
                 "tracking",
                 "Running Notification",
                 NotificationManager.IMPORTANCE_LOW
             )
-        val notificationManager = getSystemService(NotificationManager::class.java)
         notificationManager.createNotificationChannel(channel)
+
+
+        // * Canale dedicato per le notifiche di attività rilevate
+        val activityDetectionChannel =
+            NotificationChannel(
+                "detection_channel",
+                "Automatic Tracking Detecting Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Canale dedicato per le notifiche di attività rilevate"
+                enableVibration(false)
+            }
+        notificationManager.createNotificationChannel(activityDetectionChannel)
     }
 
 

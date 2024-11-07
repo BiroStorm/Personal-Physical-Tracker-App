@@ -11,5 +11,7 @@ interface DataStoreRepository {
     fun isTracking(): Flow<Boolean?>
     suspend fun setTracking(value: Boolean)
     suspend fun initializeDefaults()
+    suspend fun setStartTime(value: Long)
+    suspend fun getStartTime() : Long
 
 }

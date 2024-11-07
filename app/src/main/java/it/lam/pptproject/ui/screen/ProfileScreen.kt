@@ -45,6 +45,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
             onClick = {
                 viewModel.clearActiveUser()
 
+
             },
             modifier = Modifier.padding(top = 16.dp)
         ) {

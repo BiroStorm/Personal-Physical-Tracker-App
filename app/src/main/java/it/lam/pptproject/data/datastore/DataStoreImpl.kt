@@ -6,9 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import it.lam.pptproject.utils.AppStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -25,10 +25,9 @@ class DataStoreImpl @Inject constructor(
 ) : DataStoreRepository {
 
     override suspend fun initializeDefaults() {
-        val username : Boolean? = isTracking().first()
-        if(username == null){
-            setTracking(false)
-        }
+        setTracking(false)
+        setStartTime(System.currentTimeMillis())
+        putString("lastActivity", "")
     }
 
     override suspend fun putString(key: String, value: String) {
@@ -51,7 +50,7 @@ class DataStoreImpl @Inject constructor(
             // * dataStore.data Ritorna un Flow<T>
             val preferences = context.dataStore.data.first()
             preferences[preferencesKey]
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             null
         }
@@ -62,18 +61,18 @@ class DataStoreImpl @Inject constructor(
             val preferencesKey = intPreferencesKey(key)
             val preferences = context.dataStore.data.first()
             preferences[preferencesKey]
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
 
     override fun isTracking(): Flow<Boolean?> {
-            val preferencesKey = booleanPreferencesKey("isTracking")
-            return context.dataStore.data
-                .map { preferences ->
-                    preferences[preferencesKey]
-                }
+        val preferencesKey = booleanPreferencesKey("isTracking")
+        return context.dataStore.data
+            .map { preferences ->
+                preferences[preferencesKey]
+            }
 
     }
 
@@ -83,6 +82,22 @@ class DataStoreImpl @Inject constructor(
             preferences[preferencesKey] = value
         }
     }
+
+
+    override suspend fun setStartTime(value: Long) {
+        val preferencesKey = longPreferencesKey("startTime")
+        context.dataStore.edit { preferences ->
+            preferences[preferencesKey] = value
+        }
+    }
+
+
+    override suspend fun getStartTime(): Long {
+        val preferencesKey = longPreferencesKey("startTime")
+        val preferences = context.dataStore.data.first()
+        return preferences[preferencesKey]!!
+    }
+
 
 
 }

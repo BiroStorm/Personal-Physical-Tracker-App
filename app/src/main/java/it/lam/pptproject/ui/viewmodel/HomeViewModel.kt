@@ -11,7 +11,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import it.lam.pptproject.data.datastore.DataStoreRepository
+import it.lam.pptproject.service.ActivityDetectionService
 import it.lam.pptproject.service.TrackingService
+import it.lam.pptproject.utils.Utils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -32,6 +34,8 @@ class HomeViewModel @Inject constructor(
         Log.i("HomeViewModel2", "init: ")
     }
 
+    private var isAutomatic = false
+
     fun switchState() {
         hasStarted = !hasStarted
         viewModelScope.launch {
@@ -48,6 +52,7 @@ class HomeViewModel @Inject constructor(
 
     // * Richiamato dalla UI per evitare un Bug.
     fun startTrackingService(selectedOption: String) {
+        this.isAutomatic = false
         viewModelScope.launch {
             Intent(appContext, TrackingService::class.java).also {
                 it.action = TrackingService.Actions.START.toString()
@@ -58,9 +63,31 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun stopTrackingService() {
+        try {
+            if (isAutomatic) {
+
+                Intent(appContext, ActivityDetectionService::class.java).also {
+                    it.action = ActivityDetectionService.Actions.STOP.toString()
+                    appContext.startService(it)
+                }
+
+            }else {
+                Intent(appContext, TrackingService::class.java).also {
+                    it.action = TrackingService.Actions.STOP.toString()
+                    appContext.startService(it)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("HomeViewModel2", "stopTrackingService: ${e.message}")
+        }
+
+    }
+
+    fun startDetectionService() {
+        this.isAutomatic = true
         viewModelScope.launch {
-            Intent(appContext, TrackingService::class.java).also {
-                it.action = TrackingService.Actions.STOP.toString()
+            Intent(appContext, ActivityDetectionService::class.java).also {
+                it.action = ActivityDetectionService.Actions.START.toString()
                 appContext.startService(it)
             }
         }

@@ -77,7 +77,9 @@ fun HomeScreen2(viewModel: HomeViewModel = hiltViewModel()) {
             onAccept = { selectedOption : String ->
                 viewModel.switchState()
                 showDialog = false
+                if(selectedOption != "AUTOMATIC")
                 viewModel.startTrackingService(selectedOption)
+                else viewModel.startDetectionService()
             }
         )
     }

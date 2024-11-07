@@ -13,7 +13,11 @@ import it.lam.pptproject.ui.screen.LoginScreen
 import it.lam.pptproject.ui.screen.ProfileScreen
 
 @Composable
-fun NavGraph(navController: NavHostController, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
+fun NavGraph(
+    navController: NavHostController,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
 
     //val homeViewModel2: HomeViewModel2 = viewModel(factory = AppViewModelProvider.Factory)
     NavHost(

@@ -11,12 +11,12 @@ plugins {
 
 android {
     namespace = "it.lam.pptproject"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "it.lam.pptproject"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -113,7 +113,15 @@ dependencies {
 
 
     // MPA Android Chart
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.mpandroidchart)
+
+    // Google Play Location
+
+    implementation(libs.play.services.location)
+    //implementation("com.google.gms:google-services:4.4.2")
+    implementation("androidx.work:work-runtime:2.10.0")
+
+
 
 }
 
