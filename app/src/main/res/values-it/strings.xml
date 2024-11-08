@@ -15,4 +15,9 @@
     <string name="daily_rmd_evening">Ottimo Lavoro! \\nControlla quanti passi hai fatto oggi!</string>
     <string name="daily_rmd_missing_steps">Ti mancano ancora %1$d passi per arrivare a 100 passi giornalieri!</string>
     <string name="apply_confirm_btn">Conferma</string>
+    <string name="logout_txt">Esci</string>
+    <string name="welcome_msg_txt">Benvenuto!</string>
+    <string name="insert_name_txt">Inserisci il tuo nome</string>
+    <string name="save_txt">Salva</string>
+    <string name="registered_user_txt">Utenti Registrati</string>
 </resources>

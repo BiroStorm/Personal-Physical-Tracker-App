@@ -16,4 +16,9 @@
     <string name="daily_rmd_missing_steps">You need %1$d steps to reach 100 steps per day!</string>
     <string name="daily_rmd_evening">Good Job! \\nCheck how many step you did today!</string>
     <string name="apply_confirm_btn">Confirm</string>
+    <string name="logout_txt">Logout</string>
+    <string name="welcome_msg_txt">Welcome!</string>
+    <string name="insert_name_txt">Insert your name</string>
+    <string name="save_txt">Save</string>
+    <string name="registered_user_txt">Registered User</string>
 </resources>
