@@ -1,4 +1,4 @@
-package it.lam.pptproject.service
+package it.lam.pptproject.receiver
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -19,16 +19,12 @@ import it.lam.pptproject.utils.Utils
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 private const val DETECTED_PENDING_INTENT_REQUEST_CODE = 123
 private const val RELIABLE_CONFIDENCE = 70
-
-private const val DETECTED_ACTIVITY_CHANNEL_ID = "detected_activity_channel_id"
-const val DETECTED_ACTIVITY_NOTIFICATION_ID = 18
 
 @AndroidEntryPoint
 class DetectedActivityReceiver : BroadcastReceiver() {
@@ -51,7 +47,7 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         }
         if (ActivityRecognitionResult.hasResult(intent)) {
             val result = ActivityRecognitionResult.extractResult(intent)
-            result?.let { handleDetectedActivities(it.probableActivities, context) }
+            result?.let { handleDetectedActivities(it.probableActivities) }
         }
     }
 
@@ -72,7 +68,6 @@ class DetectedActivityReceiver : BroadcastReceiver() {
 
     private fun handleDetectedActivities(
         detectedActivities: List<DetectedActivity>,
-        context: Context,
     ) {
         detectedActivities
             .filter {
@@ -85,16 +80,15 @@ class DetectedActivityReceiver : BroadcastReceiver() {
             .filter { it.confidence > RELIABLE_CONFIDENCE }
             .run {
                 if (isNotEmpty()) {
-                    checkDetectedActivity(this[0], context)
+                    checkDetectedActivity(this[0])
                     //showNotification(this[0], context)
                 }
             }
     }
 
-    private fun checkDetectedActivity(detectedActivity: DetectedActivity, context: Context) {
+    private fun checkDetectedActivity(detectedActivity: DetectedActivity) {
         val activity: Utils.RecordType =
             ActivityDetectionHelper.fromActivityType(detectedActivity.type)
-        val activityConfidence = detectedActivity.confidence
 
         var oldStartTime = 0L
         var lastActivity = ""
@@ -176,8 +170,6 @@ class DetectedActivityReceiver : BroadcastReceiver() {
                 .build()
 
         localRecordingClient.readData(readRequest).addOnSuccessListener { response ->
-
-            val jobs = mutableListOf<Job>()
             Log.d("DAR", "Data read success!")
 
             for (dataSet in response.buckets.flatMap { it.dataSets }) {
@@ -245,40 +237,6 @@ class DetectedActivityReceiver : BroadcastReceiver() {
         Log.d("DAR", "Salvataggio data con steps!: $newData")
         database.trackingDataDao().insert(newData)
     }
-
-    /*
-    private fun showNotification(detectedActivity: DetectedActivity, context: Context) {
-        createNotificationChannel(context)
-        val intent = Intent(context, MainActivity::class.java).apply {
-            putExtra(
-                SUPPORTED_ACTIVITY_KEY,
-                SupportedActivity.fromActivityType(detectedActivity.type)
-            )
-        }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            context, 0, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        val activity = SupportedActivity.fromActivityType(detectedActivity.type)
-
-        val builder = NotificationCompat.Builder(context, DETECTED_ACTIVITY_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(context.getString(activity.activityText))
-            .setContentText("Your pet is ${detectedActivity.confidence}% sure of it")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setOnlyAlertOnce(true)
-            .setAutoCancel(true)
-
-        with(NotificationManagerCompat.from(context)) {
-            notify(DETECTED_ACTIVITY_NOTIFICATION_ID, builder.build())
-        }
-
-    }
-
-     */
-
 
     companion object {
         fun getPendingIntent(context: Context): PendingIntent {

@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.ActivityRecognitionClient
 import dagger.hilt.android.AndroidEntryPoint
+import it.lam.pptproject.receiver.DetectedActivityReceiver
 import java.util.Locale
 
 const val ACTIVITY_UPDATES_INTERVAL = 50L

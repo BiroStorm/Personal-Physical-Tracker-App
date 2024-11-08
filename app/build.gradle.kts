@@ -115,11 +115,12 @@ dependencies {
     // MPA Android Chart
     implementation(libs.mpandroidchart)
 
-    // Google Play Location
-
+    // Google Play Location for Recognition Activity
     implementation(libs.play.services.location)
-    //implementation("com.google.gms:google-services:4.4.2")
-    implementation("androidx.work:work-runtime:2.10.0")
+    implementation(libs.androidx.work.runtime)
+
+    // Calendar
+    implementation(libs.calendar.compose)
 
 
 

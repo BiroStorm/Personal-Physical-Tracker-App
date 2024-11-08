@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import it.lam.pptproject.ui.navigation.NavGraph
 import it.lam.pptproject.ui.navigation.NavigationDestination
+import it.lam.pptproject.ui.screen.CalendarDestination
 import it.lam.pptproject.ui.screen.ChartsDestination
 import it.lam.pptproject.ui.screen.HomeDestination
 import it.lam.pptproject.ui.screen.ProfileDestination
@@ -59,18 +60,6 @@ class MainActivity : ComponentActivity() {
         } else {
             activityRecognitionPermissionRequest.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
         }
-
-        /*
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                0
-            )
-        }
-
-         */
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +89,7 @@ fun InventoryNavHost(
     val listOfDestination = listOf(
         HomeDestination,
         ChartsDestination,
+        CalendarDestination,
         ProfileDestination
     )
 

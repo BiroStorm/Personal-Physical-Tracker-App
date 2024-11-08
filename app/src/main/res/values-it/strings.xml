@@ -10,4 +10,9 @@
     <string name="cancel_btn">Cancella</string>
     <string name="percentage_for_actvity_txt">Percentuale di Attività</string>
     <string name="steps_per_month_txt">Passi per mesi</string>
+    <string name="calendar_screen">Calendario</string>
+    <string name="daily_rmd_start">È il momento migliore per iniziare un\'attività!</string>
+    <string name="daily_rmd_evening">Ottimo Lavoro! \\nControlla quanti passi hai fatto oggi!</string>
+    <string name="daily_rmd_missing_steps">Ti mancano ancora %1$d passi per arrivare a 100 passi giornalieri!</string>
+    <string name="apply_confirm_btn">Conferma</string>
 </resources>

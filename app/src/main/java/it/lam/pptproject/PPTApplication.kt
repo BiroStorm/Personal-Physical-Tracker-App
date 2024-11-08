@@ -13,13 +13,13 @@ import com.google.android.gms.fitness.LocalRecordingClient
 import com.google.android.gms.fitness.data.LocalDataType
 import dagger.hilt.android.HiltAndroidApp
 import it.lam.pptproject.data.datastore.DataStoreRepository
-import it.lam.pptproject.service.DetectedActivityReceiver
+import it.lam.pptproject.receiver.DetectedActivityReceiver
+import it.lam.pptproject.utils.Utils.scheduleDailyNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// DO NOT TOUCH ! used by Hilt.
 @HiltAndroidApp
 class PPTApplication : Application() {
 
@@ -34,13 +34,15 @@ class PPTApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Initialize the DataStore
+        // * Initialize the DataStore
         CoroutineScope(Dispatchers.IO).launch {
             dataStoreRepository.initializeDefaults()
         }
 
-        // Initialize the Notification Channel
+        // * Initialize the Notification Channel
         setupNotificationChannel()
+
+        executeScheduledNotifications()
 
         // Perform a Play Services version check
         val hasMinPlayServices = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
@@ -57,6 +59,24 @@ class PPTApplication : Application() {
         val filter = IntentFilter("it.lam.pptproject.TerminateDAR")
         registerReceiver(detectedActivityReceiver, filter, RECEIVER_NOT_EXPORTED)
 
+    }
+
+    private fun executeScheduledNotifications() {
+        scheduleDailyNotification(
+            context = this,
+            hour = 9,
+            minute = 0,
+            notificationId = 1201,
+            message = getString(R.string.daily_rmd_start)
+        )
+
+        scheduleDailyNotification(
+            context = this,
+            hour = 23,
+            minute = 36,
+            notificationId = 1202,
+            message = getString(R.string.daily_rmd_evening)
+        )
     }
 
     @SuppressLint("MissingPermission")
@@ -84,8 +104,9 @@ class PPTApplication : Application() {
     }
 
     private fun setupNotificationChannel() {
-
         val notificationManager = getSystemService(NotificationManager::class.java)
+
+        // * Dedicato per le notifiche di inizio e fine attività scelte dall'utente
         val channel =
             NotificationChannel(
                 "tracking",
@@ -106,6 +127,18 @@ class PPTApplication : Application() {
                 enableVibration(false)
             }
         notificationManager.createNotificationChannel(activityDetectionChannel)
+
+
+        val activityNotificationChannel =
+            NotificationChannel(
+                "notification_channel",
+                "Daily Notification Channel",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Canale dedicato per le notifiche giornaliere"
+                enableVibration(true)
+            }
+        notificationManager.createNotificationChannel(activityNotificationChannel)
     }
 
 

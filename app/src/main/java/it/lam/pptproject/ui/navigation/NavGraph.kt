@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import it.lam.pptproject.ui.screen.CalendarScreen
 import it.lam.pptproject.ui.screen.ChartsScreen
 import it.lam.pptproject.ui.screen.HomeScreen2
 import it.lam.pptproject.ui.screen.LoginScreen
@@ -29,5 +30,6 @@ fun NavGraph(
         composable("Charts") { ChartsScreen() }
         composable("Profile") { ProfileScreen() }
         composable("Landing") { LoginScreen() }
+        composable("Calendar") { CalendarScreen() }
     }
 }

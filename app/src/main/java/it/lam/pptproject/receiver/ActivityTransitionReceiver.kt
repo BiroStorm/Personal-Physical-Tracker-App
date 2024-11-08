@@ -1,4 +1,4 @@
-package it.lam.pptproject.service
+package it.lam.pptproject.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

@@ -1,48 +1,51 @@
 package it.lam.pptproject
 
-import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import it.lam.pptproject.ui.screen.LoginScreen
 import it.lam.pptproject.ui.viewmodel.BaseScreenViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
-fun MainScreen (viewModel: BaseScreenViewModel = hiltViewModel()){
-
-    /*
-
-    var isUserActive by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        isUserActive = viewModel.thereIsAnActiveUser()
-        Log.i("BaseScreen", "isUserActive1: $isUserActive")
-
-        delay(1000L) // Replace with actual loading logic
-
-    }
-     */
+fun MainScreen(viewModel: BaseScreenViewModel = hiltViewModel()) {
 
     val user by viewModel.activeUser.observeAsState()
 
-    WelcomeScreen()
+    // * Effetto di caricamento per far in modo di caricare 'user'
+    var isVisible by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) {
+        delay(500L)
+        isVisible = false
+    }
 
-    Log.i("MainScreen", "user: $user")
-    if (user == null) {
-
-        Log.i("MainScreen", "user: 0")
-        LoginScreen()
+    if (isVisible) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            CircularProgressIndicator() // Cerchio che gira
+        }
     } else {
 
-        Log.i("MainScreen", "user: 1")
-        InventoryNavHost()
+        // * Reindirizzamento dopo il "finto caricamento"
+        if (user == null) {
+            LoginScreen()
+        } else {
+            InventoryNavHost()
+        }
     }
-}
-
-@Composable
-private fun WelcomeScreen() {
-    // TODO Fare una specie di welcome che dura qualche secondo
-    // tempo che user trovi o meno l'utente.
 
 }
+
