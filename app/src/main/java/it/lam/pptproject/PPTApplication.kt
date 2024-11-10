@@ -72,8 +72,8 @@ class PPTApplication : Application() {
 
         scheduleDailyNotification(
             context = this,
-            hour = 23,
-            minute = 36,
+            hour = 18,
+            minute = 0,
             notificationId = 1202,
             message = getString(R.string.daily_rmd_evening)
         )

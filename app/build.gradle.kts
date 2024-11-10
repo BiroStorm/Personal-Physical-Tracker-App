@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 
-    // added
-    //id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
     alias (libs.plugins.hilt.application)
 
@@ -103,14 +101,6 @@ dependencies {
     //noinspection KaptUsageInsteadOfKsp
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
-
-    // VICO
-    implementation(libs.vico.compose)
-    implementation(libs.vico.compose.m2)
-    implementation(libs.vico.compose.m3)
-    implementation(libs.vico.core)
-    //implementation(libs.vico.views)
-
 
     // MPA Android Chart
     implementation(libs.mpandroidchart)
