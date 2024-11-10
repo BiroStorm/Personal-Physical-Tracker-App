@@ -7,4 +7,18 @@
     <string name="screen_charts">Charts</string>
     <string name="home_screen" translatable="false">Home</string>
     <string name="profile_screen">Profile</string>
+    <string name="select_activity_txt">Select Your Activity</string>
+    <string name="cancel_btn">Cancel</string>
+    <string name="percentage_for_actvity_txt">Percentage for Activity</string>
+    <string name="steps_per_month_txt">Steps per Month</string>
+    <string name="calendar_screen">Calendar</string>
+    <string name="daily_rmd_start">It\'s the perfect time to start an Activity!</string>
+    <string name="daily_rmd_missing_steps">You need %1$d steps to reach 100 steps per day!</string>
+    <string name="daily_rmd_evening">Good Job! \\nCheck how many step you did today!</string>
+    <string name="apply_confirm_btn">Confirm</string>
+    <string name="logout_txt">Logout</string>
+    <string name="welcome_msg_txt">Welcome!</string>
+    <string name="insert_name_txt">Insert your name</string>
+    <string name="save_txt">Save</string>
+    <string name="registered_user_txt">Registered User</string>
 </resources>

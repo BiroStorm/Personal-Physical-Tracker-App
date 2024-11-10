@@ -1,83 +1,97 @@
 package it.lam.pptproject.ui.viewmodel
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Application
-import android.content.pm.PackageManager
-import androidx.compose.runtime.State
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import it.lam.pptproject.data.ButtonStateDataStore
-import it.lam.pptproject.data.UserPreferencesDataStore
-import it.lam.pptproject.repository.TrackingRepository
-import it.lam.pptproject.utils.Tracker
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import it.lam.pptproject.data.datastore.DataStoreRepository
+import it.lam.pptproject.service.ActivityDetectionService
+import it.lam.pptproject.service.TrackingService
+import it.lam.pptproject.utils.Utils
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val dataStoreRepository: DataStoreRepository,
+    @ApplicationContext private val appContext: Context,
+) : ViewModel() {
+    private var hasStarted by mutableStateOf(false)
+        private set
 
 
-class HomeViewModel(
-    private val trackingRepository: TrackingRepository,
-    application: Application
-) : AndroidViewModel(application) {
-
-
-    @SuppressLint("StaticFieldLeak")
-    private val context = application.applicationContext
-    private val _isTerminated = mutableStateOf(false)
-    val isTerminated: State<Boolean> get() = _isTerminated
-    private val _currentType = mutableStateOf(Tracker.RecordType.WALKING)
-    val currentType: State<Tracker.RecordType> get() = _currentType
+    var isStarted: Flow<Boolean?> = dataStoreRepository.isTracking()
 
     init {
-        viewModelScope.launch {
-            ButtonStateDataStore.getApplicationState(context).collect { savedState ->
-                _isTerminated.value = savedState
-            }
-            _currentType.value = Tracker.getType()
-        }
+        Log.i("HomeViewModel2", "init: ")
     }
 
-    fun toggleState() {
-        if (!checkPermissions()) {
-            // * Non si hanno ancora i permessi, ignorare il click.
-            return
-        }
-        _isTerminated.value = !_isTerminated.value
-        viewModelScope.launch {
-            ButtonStateDataStore.saveApplicationState(context, _isTerminated.value)
-            if (_isTerminated.value) {
-                Tracker.start()
-                val username = UserPreferencesDataStore.getUsername(context).first() ?: "unknown"
-                Tracker.setUsername(username)
+    private var isAutomatic = false
 
-                trackingRepository.startTracking()
+    fun switchState() {
+        hasStarted = !hasStarted
+        viewModelScope.launch {
+            if (hasStarted) {
+                dataStoreRepository.setTracking(true)
             } else {
-                Tracker.stop()
-                trackingRepository.endTracking()
+                dataStoreRepository.setTracking(false)
+                stopTrackingService()
+            }
+
+            Log.i("HomeViewModel2", "switchState: ${isStarted.first()}")
+        }
+    }
+
+    // * Richiamato dalla UI per evitare un Bug.
+    fun startTrackingService(selectedOption: String) {
+        this.isAutomatic = false
+        viewModelScope.launch {
+            Intent(appContext, TrackingService::class.java).also {
+                it.action = TrackingService.Actions.START.toString()
+                it.putExtra("selectedOption", selectedOption)
+                appContext.startService(it)
             }
         }
     }
 
-    fun readFitnessData() {
+    private fun stopTrackingService() {
+        try {
+            if (isAutomatic) {
+
+                Intent(appContext, ActivityDetectionService::class.java).also {
+                    it.action = ActivityDetectionService.Actions.STOP.toString()
+                    appContext.startService(it)
+                }
+
+            }else {
+                Intent(appContext, TrackingService::class.java).also {
+                    it.action = TrackingService.Actions.STOP.toString()
+                    appContext.startService(it)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("HomeViewModel2", "stopTrackingService: ${e.message}")
+        }
+
+    }
+
+    fun startDetectionService() {
+        this.isAutomatic = true
         viewModelScope.launch {
-            trackingRepository.printDati()
+            Intent(appContext, ActivityDetectionService::class.java).also {
+                it.action = ActivityDetectionService.Actions.START.toString()
+                appContext.startService(it)
+            }
         }
     }
-
-    fun updateTrackerType(type: Tracker.RecordType) {
-        _currentType.value = type
-        Tracker.setType(type)
-    }
-
-
-
-    private fun checkPermissions(): Boolean {
-        return context.checkSelfPermission(
-            Manifest.permission.ACTIVITY_RECOGNITION
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
 
 
 }

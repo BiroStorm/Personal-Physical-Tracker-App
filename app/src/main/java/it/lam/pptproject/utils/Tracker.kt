@@ -2,6 +2,7 @@ package it.lam.pptproject.utils
 
 import android.util.Log
 import it.lam.pptproject.model.room.TrackingData
+import it.lam.pptproject.utils.Utils.RecordType
 
 // An Singleton (object) where to save the data of the current tracking
 // that will be saved later into the database as TrackerData
@@ -96,11 +97,6 @@ object Tracker {
     override fun toString(): String {
         return "Tracker(startTime=$startTime, endTime=$endTime, type=$type, steps=$steps, username='$username')"
     }
-
-    enum class RecordType {
-         WALKING, DRIVING, SITTING
-    }
-
 
     // * Dovrebbe essere usato solo quando type != WALKING
     fun convertToTrackingData(): TrackingData {

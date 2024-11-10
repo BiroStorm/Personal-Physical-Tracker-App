@@ -7,23 +7,29 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import it.lam.pptproject.ui.screen.HomeScreen
-import it.lam.pptproject.ui.screen.ProfileScreen
+import it.lam.pptproject.ui.screen.CalendarScreen
 import it.lam.pptproject.ui.screen.ChartsScreen
 import it.lam.pptproject.ui.screen.HomeScreen2
-import it.lam.pptproject.ui.screen.LandingScreen
+import it.lam.pptproject.ui.screen.LoginScreen
+import it.lam.pptproject.ui.screen.ProfileScreen
 
 @Composable
-fun NavGraph(navController: NavHostController, contentPadding: PaddingValues, modifier: Modifier = Modifier) {
+fun NavGraph(
+    navController: NavHostController,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+
+    //val homeViewModel2: HomeViewModel2 = viewModel(factory = AppViewModelProvider.Factory)
     NavHost(
         navController = navController,
-        startDestination = "landing",
+        startDestination = "Home",
         modifier = Modifier.padding(contentPadding)
     ) {
-        composable("Home") { HomeScreen() }
+        composable("Home") { HomeScreen2() }
         composable("Charts") { ChartsScreen() }
-        composable("Home2") { HomeScreen2() }
-        composable("Profile") { ProfileScreen(navController) }
-        composable("Landing") { LandingScreen(navController) }
+        composable("Profile") { ProfileScreen() }
+        composable("Landing") { LoginScreen() }
+        composable("Calendar") { CalendarScreen() }
     }
 }

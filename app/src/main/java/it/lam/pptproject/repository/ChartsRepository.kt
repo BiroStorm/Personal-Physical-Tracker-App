@@ -1,17 +1,24 @@
 package it.lam.pptproject.repository
 
-import android.util.Log
-import androidx.lifecycle.asLiveData
+import it.lam.pptproject.data.room.MonthlySteps
 import it.lam.pptproject.data.room.TypePercentageData
 import it.lam.pptproject.model.room.StatisticsDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
+import javax.inject.Inject
 
-class ChartsRepository(private var statisticsDao: StatisticsDao) {
+interface ChartsRepository {
+    fun getPercentage(): Flow<List<TypePercentageData>>
+    fun getMonthlySteps(): Flow<List<MonthlySteps>>
 
+}
 
+class ChartsRepositoryImpl  @Inject constructor (private var statisticsDao: StatisticsDao) : ChartsRepository{
 
-    fun getPercentage(): Flow<List<TypePercentageData>>{
+    override fun getPercentage(): Flow<List<TypePercentageData>> {
         return statisticsDao.getPercentuale()
+    }
+
+    override fun getMonthlySteps(): Flow<List<MonthlySteps>> {
+        return statisticsDao.getMonthlySteps()
     }
 }

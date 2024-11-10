@@ -27,3 +27,28 @@ TODO:
  - [ ] Implementare la funzionalità di salvataggio automatico.
  - [ ] Gestire il salvataggio in caso di chiusura dell'app.
  - [ ] Operazione 1 in background --> Notifica all'utente che deve esercitarsi.
+
+
+############################# per datastore #############################
+https://medium.com/@vgoyal_1/datastore-android-how-to-use-it-like-a-pro-using-kotlin-2c2440683d78
+
+
+
+########################## Landing Screen   ##########################
+
+Quando l'utente entra per la prima volta sull'app, arriva al LandingScreen
+la quale contiene un modo per inserire un Username o selezionarlo da uno di quelli già presenti.
+LandingScreen si collega a --> LandinScreenVM --> UserRepository --> UserDAO
+LandingScreenVM --> DataStoreRepository per salvare l'informazione dell'utente.
+
+Usa un UserRepository perchè serve per prendere/aggiornare l'informazione sull'utente.
+Mentre
+
+
+########################### Problem ################
+Il problema del database è che non permette di ricevere direttamente CustomObject ma
+per forza Flow<> in quanto viene eseguito sul thread principale.
+La soluzione è usare Flow<> oppure usare suspend fun (fun asincrona) oppure
+permettere di eseguire le query sul thread principale con:
+.allowMainThreadQueries() nella creazione del db.
+

@@ -1,5 +1,6 @@
 package it.lam.pptproject
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -19,19 +20,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.fitness.LocalRecordingClient
 import dagger.hilt.android.AndroidEntryPoint
 import it.lam.pptproject.ui.navigation.NavGraph
 import it.lam.pptproject.ui.navigation.NavigationDestination
+import it.lam.pptproject.ui.screen.CalendarDestination
 import it.lam.pptproject.ui.screen.ChartsDestination
 import it.lam.pptproject.ui.screen.HomeDestination
-import it.lam.pptproject.ui.screen.HomeDestination2
 import it.lam.pptproject.ui.screen.ProfileDestination
 import it.lam.pptproject.ui.theme.PPTProjectTheme
 import it.lam.pptproject.utils.PermissionManager
@@ -44,24 +43,28 @@ class MainActivity : ComponentActivity() {
     ) { isGranted: Boolean ->
         if (!isGranted) {
             PermissionManager.forcePermissionRequest(this)
+        } else {
+
+            (application as PPTApplication).subscribeToStepCount()
+        }
+    }
+
+
+    private fun checkAndRequestPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACTIVITY_RECOGNITION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            (application as PPTApplication).subscribeToStepCount()
+        } else {
+            activityRecognitionPermissionRequest.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Perform a Play Services version check
-        val hasMinPlayServices = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
-            this,
-            LocalRecordingClient.LOCAL_RECORDING_CLIENT_MIN_VERSION_CODE
-        )
-
-        if (hasMinPlayServices != ConnectionResult.SUCCESS) {
-
-            Log.w("MainActivity", "Google Play Services troppo vecchia!")
-        }
-
-        activityRecognitionPermissionRequest.launch(android.Manifest.permission.ACTIVITY_RECOGNITION)
+        checkAndRequestPermission()
 
 
         enableEdgeToEdge()
@@ -78,21 +81,15 @@ class MainActivity : ComponentActivity() {
 
 }
 
-
-@Composable
-fun MainScreen(navController: NavHostController = rememberNavController()) {
-    InventoryNavHost(navController = navController)
-}
-
 @Composable
 fun InventoryNavHost(
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
 ) {
 
     val listOfDestination = listOf(
         HomeDestination,
-        HomeDestination2,
         ChartsDestination,
+        CalendarDestination,
         ProfileDestination
     )
 
@@ -115,11 +112,19 @@ fun BottomNavigationBar(navController: NavController, items: List<NavigationDest
 
         items.forEach { item ->
             NavigationBarItem(
-                icon = { Icon(imageVector = ImageVector.vectorResource(item.icon), contentDescription = stringResource(item.name)) },
+                icon = {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(item.icon),
+                        contentDescription = stringResource(item.name)
+                    )
+                },
                 label = { Text(stringResource(item.name)) },
                 selected = currentRoute == item.route,
                 onClick = {
-                    Log.i("MainActivity", "Navigating to ${item.route} and currentRoute is $currentRoute")
+                    Log.i(
+                        "MainActivity",
+                        "Navigating to ${item.route} and currentRoute is $currentRoute"
+                    )
                     navController.navigate(item.route) {
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) {

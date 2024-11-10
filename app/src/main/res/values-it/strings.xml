@@ -6,4 +6,18 @@
     <string name="settings">Apri Impostazioni</string>
     <string name="screen_charts">Grafici</string>
     <string name="profile_screen">Profilo</string>
+    <string name="select_activity_txt">Seleziona la tua attività</string>
+    <string name="cancel_btn">Cancella</string>
+    <string name="percentage_for_actvity_txt">Percentuale di Attività</string>
+    <string name="steps_per_month_txt">Passi per mesi</string>
+    <string name="calendar_screen">Calendario</string>
+    <string name="daily_rmd_start">È il momento migliore per iniziare un\'attività!</string>
+    <string name="daily_rmd_evening">Ottimo Lavoro! \\nControlla quanti passi hai fatto oggi!</string>
+    <string name="daily_rmd_missing_steps">Ti mancano ancora %1$d passi per arrivare a 100 passi giornalieri!</string>
+    <string name="apply_confirm_btn">Conferma</string>
+    <string name="logout_txt">Esci</string>
+    <string name="welcome_msg_txt">Benvenuto!</string>
+    <string name="insert_name_txt">Inserisci il tuo nome</string>
+    <string name="save_txt">Salva</string>
+    <string name="registered_user_txt">Utenti Registrati</string>
 </resources>

@@ -3,19 +3,20 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
 
     // added
-    id("com.google.dagger.hilt.android")
+    //id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    alias (libs.plugins.hilt.application)
 
 }
 
 android {
     namespace = "it.lam.pptproject"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "it.lam.pptproject"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -79,14 +80,12 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
 
     // HILT
-    implementation(libs.hilt.android)
-
-    kapt(libs.hilt.android.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation (libs.hilt.android)
+    kapt (libs.hilt.android.compiler)
+    implementation (libs.hilt.navigation.compose)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    runtimeOnly(libs.androidx.hilt.navigation.compose)
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.android)
@@ -114,7 +113,16 @@ dependencies {
 
 
     // MPA Android Chart
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.mpandroidchart)
+
+    // Google Play Location for Recognition Activity
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.work.runtime)
+
+    // Calendar
+    implementation(libs.calendar.compose)
+
+
 
 }
 
