@@ -172,7 +172,7 @@ class TrackingService : Service() {
         val readRequest =
             LocalDataReadRequest.Builder()
                 .aggregate(LocalDataType.TYPE_STEP_COUNT_DELTA)
-                .bucketByTime(30, TimeUnit.SECONDS)
+                .bucketByTime(1, TimeUnit.DAYS)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build()
 

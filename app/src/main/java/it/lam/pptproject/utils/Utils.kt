@@ -28,6 +28,7 @@ object Utils {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
+            // si controlla se è l'orario è già passato, se è passato si setta per il giorno successivo.
             if (before(Calendar.getInstance())) add(Calendar.DAY_OF_MONTH, 1)
         }
 
